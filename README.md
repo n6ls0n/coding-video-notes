@@ -98,9 +98,49 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - The decoder then performs the reverse of the encoder steps to get the original video
 
-
-
 #### Inputs and Outputs
+
+- A video encoder takes in uncompressed video and outputs a compressed (coded) bitstream. Other information may also go into the encoder such as parameters to control its operation and/or information to be embedded in the video bitstream
+
+- The video decoder takes in a coded bitstream and produces uncompressed displayable video as its output. Further information such as status, timing and side information, may also be output
+
+- A digital video camera captures a real-world image and converts it to a sampled form. The moving image is sampled at certain time instants to produces frames or fields of video
+
+- A frame is a snapshot of the scene at a particular time instant and a field captures half the visual information in a frame, for example, the odd lines or even lines, at each instant
+
+- Interlaced video which consists fo a series of fields is largely obsolete in 2023. Modern-day capture devices and displays record and show video as a series of complete, progressive frames at a particular number of frames per second, known as the video frame rate
+
+- Each video frame is sampled usually on a rectangular grid, forming an array of pixels.A displayable pixel may be monochrome or color. A monochrome pixel can be represented with a single number indicating the brightness of the pixel. Larger values represent brighter pixels closers to white and smaller values represent darker pixels closer to black
+
+- Video captured by a camera sensor or displayed on a screen may be in RGB format which menas that each captured or displayed pixel has a Red, Green and Blue component
+
+- Red, Blue and Green are additive primary colors i.e. they can be mixed to produce a wide range of colors. Each of these can be represented as an N-bit number where N is an integer
+
+- A complete image or video frame can be represented as three colour planes, each containing all the pixel values of the red, green ad blue components
+
+- RGB is three-component system i.e. a colour pixel can be represented by a weighted combination of three components (R, G and B). Many other component systems can be used. A minimum of three components are required to represent full color
+
+- YUV or YCrCb is a popular color space for image and video data. In this system, the luminance or luma component Y represents the brightness of each pixel position, corresponding to a monochrome version of each image or video frame
+
+- The red component can be expressed as R = Y + Cr, where Cr is the red chroma or colour difference, representing the positive or negative difference between each luma sample Y and each Red pixel R
+
+- Similarly, the blue and green component B = Y + Cb and G = Y + Cg
+
+- A complete, in fact, overcomplete representation fo the image is Y, Cr, Cb, Cg
+
+- Only three components are necessary to fully represent the image. The fourth component can be calculated by combining the other three. In the popular YCrCb format, the green chroma component Cg is omitted. An image can be converted from RGB to YCrCb or vice versa using a set of mathematical operations. Hence, images can be converted from one format to another without any loss in information
+
+- One advantage of a colour space such as YCrCb is that human observers are less sensitive to colour than to brightness or luma. The chroma components (Cr and Cb) can be sub-sampled with respect to the luma component (Y) without having an obviously detrimental effect on image quality
+
+- A video encoder makes many decisions while compressing a video sequence. Control parameters or values may be input to the encoder such as target bit rates or file sizes and information about the format of the video input. These parameters may be selected by the user, hardwired into the encoder application or device and/or calculated or derived automatically during encoding
+
+- Along with encoding parameters, further side information may be passed to the encoder for embedding in the coded bitstream, such as text or metadata about what the video clip contains, information to help the playback device display the video and so on
+
+- A video decoder may output statistics and other side information together with the decoded video
+
+- A coded or compressed video is a sequence of bits. Encoded in this sequence is a complete compressed representation of the original video clip. The sequence of bits is put together in a specific way that is usually defined by a standard or a specification, such as High Efficiency Video Encoding (HEVC)/H.265 or AV1. When the structure of the coded video sequence matches the requirements of the specification and the video can be decoded according to the specification, we would say that it conforms to the specification or standard
+
+- The coded sequence may be stored in one or more video or media files or it may be streamed or transmitted directly. The way the coded video sequence is organised for storaf=ge or transmission may itself be defined as part of one or more standards
 
 #### Structural Elements
 
