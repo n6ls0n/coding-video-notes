@@ -76,6 +76,30 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### An Overview of Video Coding
 
+- One second of original, uncompressed SD video, captured at 25 frames per second, takes up around 15.5 MBs of storage space. This means that the video clip would require 124 Mbits/second of bandwidth to transmit over a network or broadcast channel in real time, i.e. one second of playable video sent every second
+
+- One seocn dof uncompressed UHD video captured at 50 frames per second, take sup around 620 Mbs of storage space and would require a substantial 5Gbit/seond of transmission bandwidth to send in real time
+
+- A video codec is used to encode/decode video for storage and transmission
+
+- It can be a software program, hardware module on a chip (integrated circuit), or a combination of the two
+
+- The codec does a computationally intensive job which is to convert many millions of pixels per second to and/or from a compressed or encoded form
+
+- The encoder carries out the basic following steps to create a compressed file:
+
+  1. Partition: Decompose the video frame into basic regions, usually square or rectangular blocks of pixels
+
+  2. Predict: For each region or block, create a prediction or an estimate of the block using information such as neighbouring pixels or previously coded frames. Subtract this prediction from the actual block to create a residual or difference block
+
+  3. Transform and quantize: Transform the residual block into a frequency domain. Quantize the transformed block, which has the effect of discarding less-important components of data and retaining only the visually important features
+
+  4. Entropy encode: Convert the result of the quantize step together with any other information needed to decode the frame into a compressed format
+
+- The decoder then performs the reverse of the encoder steps to get the original video
+
+
+
 #### Inputs and Outputs
 
 #### Structural Elements
