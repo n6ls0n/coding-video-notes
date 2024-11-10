@@ -9,7 +9,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
   - [Inputs and Outputs](#inputs-and-outputs)
   - [Structural Elements](#structural-elements)
   - [Prediction](#prediction)
-  - [Transform and Quantization](#transform-and-quantization)
+  - [Transform and Quantization Process](#transform-and-quantization-process)
   - [Bitstream Coding](#bitstream-coding)
   - [The Coded Bitstream](#the-coded-bitstream)
   - [Storing and Transmitting the Coded Bitstream](#storing-and-transmitting-the-coded-bitstream)
@@ -43,10 +43,10 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
   - [When Inter Prediction Does Not Find a Good Match](#)
   - [HEVC Inter Prediction](#hevc-inter-prediction)
   - [Inter Prediction in VVC](#inter-prediction-in-vvc)
-- [Transform and Quantisation](#transform-and-quantization)
+- [Transform and Quantization](#transform-and-quantization)
   - [Residual Blocks](#residual-blokcs)
   - [Block Transforms](#block-transforms)
-  - [Quantisation](#quantisation)
+  - [Quantization](#Quantization)
   - [Transform and Quatisation in Practice](#transform-and-quantization-in-practice)
   - [HEVC Transform and Quantization](#hevc-transform-and-quantization)
   - [Transform and Quantise in H266 Versatile Video Coding](#transform-and-quantise-in-h266-versatile-video-coding)
@@ -194,7 +194,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - Predicting the block from pixels in the same frame is known as intra prediction. Predicting the block from pixels in a different frame is known as inter prediction
 
-#### Transform and Quantization
+#### Transform and Quantization Process
 
 - The output of the prediction process is a residual block, which is also the input to the transform and quantization process. The transform process converts this block of residual samples into a block of transform coefficients. In itself, the transform does not remove or reduce information. Instead, it represents the block in a different form or domain. The quantization process reduces the precision and the dynamic range of eahc of the transform coefficients. Quantization is a lossy process i.e. it removes information and is not reversible
 
@@ -210,9 +210,43 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - The transform does not compress data. Rather it represents the information from the original block in a form that may be more easily compressible
 
-- Quantisation reduces the precision fo every coefficient in the block, which has the effect of setting small-valued or insignificant coefficients to zero. It is an irreversible or "lossy' process. The information removed during quantisation cannot be restored later
+- Quantization reduces the precision fo every coefficient in the block, which has the effect of setting small-valued or insignificant coefficients to zero. It is an irreversible or "lossy' process. The information removed during Quantization cannot be restored later
+
+- The behaviour of this process can be controlled by a quantization parameter which affects the strength of quantization. A larger QP results in more quantization i.e. greater loss of precision but also results in more compression
+
+- QP is an important control parameter in a video codec because it has a direct effect on compression and quality
 
 #### Bitstream Coding
+
+- All the information necessary to decode the video sequence must be encoded i.e. packaged into a bitstream that is (1) compressed and (2) suitable for transmission and (3) decodable
+
+- The information that needs to be sent may include:
+  1. Quantized transform coefficients
+  2. Prediction parameters, such as motion vectors, prediction mode choices, reference frame choices and prediction block sizes
+  3. QP choice
+  4. MB information
+  5. Picture information
+  6. Sequence information i.e. high-level parameters that affect the entire video clip
+
+- First certain values are pre-processed i.e. converted into a suitable form for compression. Then, the processed values are entropy encoded i.e. coded into a compressed bitstream. Two commonly used forms of entropy coding are variable-length coding and arithmetic coding
+
+- Preprocessing takes advantage of the statistical behaviour of certain values produced by the video encoder
+
+- Quantized transform coefficients tend to follow particular distributions. Typically, larger non-zero values are clustered around the top-left or Dc coefficient with smaller or zero values towards the lower right or highest frequencies. The two-dimensional block of transform coefficients is converted to a one-dimensional array in a scanning pattern such as a zig-zig scan. The effect is generally to concentrate the significant non-zero coefficients together. This process is known as coefficient-reordering
+
+- Prediction parameters and QP tend to be highly correlated amongst neighbouring blocks in a coded frame. These parameters can be efficiently coded using differential prediction. For example, the encoder forms a predicted QP based on previously transmitted Qp values. Instead of sending the QP itself, the encoder calculates and sends the difference between the predicted and actual QP. The decoder receives the differential value, forms the same prediction and adds the differential to the prediction to construct the QP. A similar approach can be taken for motion vectors, prediction modes and prediction block sizes, etc.
+
+- After the pre-processing stage covered above, the original video sequence has been converted into a set of parameters and value sometimes described as symbols. The entropy encoding process converts the symbols comprising a coded video sequence into an efficient binary form, a compressed bitstream
+
+- Entropy encoding is a mapping between symbols and bits. There are different types of mappings such as:
+
+  1. Fixed-length encoding: Each of the possible values of a symbol is represented with a binary code with the same number of bits, regardless of the value. THis mapping may be suitable for symbols that occur infrequently, e.g. a symbol that occurs once or only a few times per video sequence, such as a start-code or a sequence-level parameter. A fixed-length encoding is perhaps the simplest mapping but is not particularly efficient in terms of compression
+
+  2. Variable-length encoding: A symbol is mapped to a binary code that may have a variable number of bits, depending on the value of the symbol. Typically, shorter binary codes are assigned to values that occur frequently (with a high probability) and other longer binary codes are assigned to values that occur less frequently (with a low probability). Variable-length codes may be structured, i.e. capable of algorithmic construction, such as the Exponential-Golomb (Exp-Golomb). Exp-Golomb codewords can be constructed according to a pattern: n leading zeroes, followed by a 1, followed by an n-bit binary word. An Exp-Golomb codeword can be constructed for any index value. Alternatively, variable-length codewords may be designed specifically for a particular value or set of values. For example, Context-Adaptive Variable-Length Coding (CAVLC) for transform coefficients in H264/AVC uses a mapping that is specific to the structure and values found in a block of transform coefficients. Variable-length codewords for video coding should be uniquely decodable so that there is no ambiguity in the value that is to be decoded. A limitation of variable-length encoding is that each symbol must be represented by an integral (whole) number of bits. In fact, the most efficient mapping for a symbol with probability of occurrence P is log2(1/P) bits, which may be a fractional number rather than an integer
+
+  3. Binary arithmetic encoding: In an arithmetic coder each symbol is mapped to a range or interval so that a series of symbols can be represented by a fractional number. This fractional number is in turn mapped to a binary code. Arithimetic coding does not require each symbol be individually mapped to an integer number of bits. Instead, symbols are represented by a fractional number of bits, and as the number of symbols represented by a single number increases, arithmetic coding can approach the ideal mapping of log2(1/P) bits per symbol. In a practical video codec, several compromises are made when implementing arithmetic coding. General arithmetic coding, in which a symbol can take any one of multiple values, can be replaced with binary arithmetic coding, in which symbols are binarised i.e. converted into a binary representation, prior to encoding, such that the arithmetic coder only works on binary values. Computationally intensive multiplications or divisions can be replaced with approximations, and the range of potential values for each interval may be restricted in order to simplify processing
+
+  4. Context adaptation: Variable-length encoding and arithmetic encoding rely on knowledge of symbol probabilities to provide maximum compression. Early video coding standards such as MPEG-2 and H263 used pre-determined probability tables derived from analysis of generic video sequences. More recently, H264 and HEVC employ context adaptation, in which symbol probabilities are adapted based on the actual statistics of the current video sequence. The video encoder and decoder measure the frequency of occurrence of symbol values and maintain a running total of the probability of each value occurring. Along with statistics from neighboring, previously coded values, these probability totals can be used to derive the codewords (VLC) or ranges (arithmetic coding)
 
 #### The Coded Bitstream
 
@@ -228,7 +262,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 ### Inter Prediction
 
-### Transform and Quantisation
+### Transform and Quantization
 
 ### Entropy Coding
 
