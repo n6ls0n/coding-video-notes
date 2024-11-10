@@ -196,7 +196,21 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Transform and Quantization
 
-- 
+- The output of the prediction process is a residual block, which is also the input to the transform and quantization process. The transform process converts this block of residual samples into a block of transform coefficients. In itself, the transform does not remove or reduce information. Instead, it represents the block in a different form or domain. The quantization process reduces the precision and the dynamic range of eahc of the transform coefficients. Quantization is a lossy process i.e. it removes information and is not reversible
+
+- A two-dimensional transform converts a block of image samples into a block of transform coefficients. The transform coefficients represent the spatial frequency content in the original block of samples
+
+- Each type of transform has its own set of basis patterns. Any image or residual block can be formed by weighting and combining or superimposing these patterns. The forward transform can be considered as a process that finds the weighting of each basis pattern required to form the image block
+
+- An example of a 4x4 transform is the Discrete Cosine Transform (DCT). There are 16 samples in a 4x4 image block and there are 16 coefficients of the transform one corresponding to each of the 16 basis patterns
+
+- The top-left pattern is a flat block, corresponding to zero frequency or 'DC'. Moving to the right, each pattern increases in frequency in the horizontal direction. Moving down, each pattern increases in frequency in the vertical direction. The lowest-right pattern is a chequerboard of horizontal and vertical frequencies
+
+- Any 4x4 block of pixels or samples can be created by weighting and combining the 4x4 basis patterns. Different weights (i.e. coefficients) produce different blocks of samples when combining the patterns
+
+- The transform does not compress data. Rather it represents the information from the original block in a form that may be more easily compressible
+
+- Quantisation reduces the precision fo every coefficient in the block, which has the effect of setting small-valued or insignificant coefficients to zero. It is an irreversible or "lossy' process. The information removed during quantisation cannot be restored later
 
 #### Bitstream Coding
 
