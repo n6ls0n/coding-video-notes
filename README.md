@@ -250,6 +250,8 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### The Coded Bitstream
 
+- The coded video sequence consists of a hierarchy of parameters or syntax elements. At the sequence level, a header contains coded parameters that are necessary for decoding subsequent coded frames or pictures. Each picture may or may not have a header and may be made up of a number of slices, each of which corresponds to an area of the coded picture. Each slice is made up of a number of coded basic units such as MBs or Superblocks. Finally, each coded unit comprises header information, prediction parameters such as motion vectors or intra prediction modes, and coded transform coefficients
+
 #### Storing and Transmitting the Coded Bitstream
 
 #### The Decoder
