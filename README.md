@@ -254,6 +254,14 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Storing and Transmitting the Coded Bitstream
 
+- The coded bitstream is suitable for efficient storage or transmission
+
+- In file storage, a complete coded sequence can be stored in a file. A media file containing compressed video is known as a container and may contain extra information such as a header, timing or synchronization parameters, one or more audio tracks and subtitles. These other data may be interleaved with the video information, so that the video file may be played by extracting and decoding video frames, audio chunks and associated information
+
+- In network transmission, the coded sequence may be transmitted over a packet network such as the Internet. The sequence must be packetized i.e. split up and placed in network packets for transport. The syntax of a coded video sequence is typically designed to accommodate packetized transmission. For example, important header information such as sequence parameters may be sent in an initial packet and at regular intervals. Each slice or picture may be sent in a separate packet, or multiple slices may be sent in a packet. Resynchronization points (e.g. intra coded pictures that can be decoded in isolation from other data, are inserted at frequent intervals so that the clip can be played from random points and so that any transmission losses can be recovered)
+
+- In broadcast transmission (which includes transmission over a broadcast medium such as cable, terrestial or satellite TV) whats involved is the mapping of coded video and audio into a sequence of transmission packets, which is associated wiht a particular programme or channel. Transmission packets from multiple programmes are multiplexed together and carried via the broadcast medium. Issues such as random access, recovery from transmission errors and switching between channels or programmes are handled in a similar way to network transmission i.e. by inserting regular synchronization points in the coded sequence
+
 #### The Decoder
 
 #### The Video Codec Model
