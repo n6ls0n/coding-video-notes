@@ -159,7 +159,44 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Prediction
 
+- The purpose of compression is to reduce the number of bits required to store or send a video clip. A video clip is made up of multiple frames, each of which contains thousands or millions of pixels. Predicting each pixel in the frame makes it possible to reduce the information in the frame which in turn makes the frame easier to compressed
+
+- Considering a single pixel in a video frame, the encoder creates a prediction pixel and subtracts it from the original pixel. The result is a difference or residual pixel. If the prediction is accurate, the difference is small or zero which means it contains less information that the original pixel
+
+- It is possible to create a new prediction for every pixel. However, it can be more efficient to process a group of pixels at a time. A video codec may split each frame up into regions or blocks and process each block as a unit. For each block of original pixels or samples, the video encoder creates a prediction block and subtracts this from the original block to generate a residual block
+
+- The encoder sends at least two things to the decoder namely a compressed version of the residual block and instructions for creating the prediction
+
+- The decoder recieves this information and then decompresses the residual block and creates the same prediction as the encoder by following the instructions previously sent. The decoder then adds the prediction block to the decompressed residual block to create a decoded block. By doing this for every block in the frame, the decoder reconstructs a complete video frame
+
+- Usually the difference or residual block , when visualized, appears to have much less visual information than the original. Each sample in the residual block has a value that can be positive or negative
+
+- Because the prediction block is reasonably similar to the original block, most of the residual samples are small positive or negative numbers. close to zero
+
+- Small magnitude or zero samples are much easier to compress than the original pixel values
+
+- For most of the pixels, the encoder should find a good prediction resulting in a residual frame that is usually a flat grey color which represents residual samples that are very close to zero
+
+- In some areas of the frame, especially around the edges of moving objects, the prediction is not so good because the prediction pixels are not a good match fo the original pixels. In these areas, the residual samples have larger-magnitude positive (light grey) or negative (dark grey) values
+
+- If we view the residual frame as a surface plot, we can see the positive and negative residual samples as peaks and troughs on the surface. The goal of the prediction process is to create a residual that is as close to possible to zero, subject to some other constraints
+
+- The encoder has a number of choices for creating each prediction block. A video coding standard usually doesn't specify exactly how an encoder should choose a prediction. However, the Standard does set out the range of options available to the encoder. The Standard sets out the range of options for prediction and a video encoder decides how to create the prediction from within the range of options specified by the standard
+
+- There are two factors to consider besides the desire to create an accurate prediction:
+  1. How much information is required to tell the decoder hwo to create an identical prediction
+  2. How much computation is required to generate the prediction?
+
+- For every block in a video frame, the encoder can create a prediction block. The prediction block should be:
+  1. A good match for the current block i.e. similar to the current block
+  2. Created using the information that is already available to the decoder, so that the decoder can create the same prediction. This usually means that the prediction should be based on previously coded information
+  3. Capable of being communicated to the decoder
+
+- Predicting the block from pixels in the same frame is known as intra prediction. Predicting the block from pixels in a different frame is known as inter prediction
+
 #### Transform and Quantization
+
+- 
 
 #### Bitstream Coding
 
