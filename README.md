@@ -144,6 +144,19 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Structural Elements
 
+- An encoder or decoder handles the video data in a structured and organized way. The general approach is to break the video clip into a hierarchy of elements such as:
+  1. Sequence: A complete video clip, scene or program, consisting of a series of frames
+
+  2. Group of Pictures: A set of coded video frames, with the decoder having the ability to start decoding within the Group of Pictures
+
+  3. Picture: A coded video frame that may be inter-related to other pictures in a Group of Pictures
+
+  4. Slice or tile: A subset or a region within a picture. Each picture is split up or partitioned into one or more slices. Alternatively or perhaps simultaneously, the picture may be split into Tiles, eahc of which is a square or rectangular region of basic units. The H266/VVC standard introduces further partitioning, the subpicture
+
+  5. Basic Unit (MG, CTUs or SuperBlock) : The basic unit of processing is typically a square region of video samples. IN older standards such as H264/AVC and MPEG-2, the basic unit or MB was set at 16x16 pixels. Formats such as H265/HEVC and AV1 cater for larger basic units of up to 64x64 pixels and the H266/VVC standards supports a basic unit size of 128x128 pixels. Larger basic units tend to be more effective compressing higher-definition content but can take more processing power and memory to encode or decode
+
+  6. Block: The block is a square or rectangular region withing a basic unit and is a grouping of samples for prediction, transformation or processing
+
 #### Prediction
 
 #### Transform and Quantization
@@ -153,6 +166,10 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 #### The Coded Bitstream
 
 #### Storing and Transmitting the Coded Bitstream
+
+#### The Decoder
+
+#### The Video Codec Model
 
 ### Structures
 
