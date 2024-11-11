@@ -167,11 +167,11 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - The encoder sends at least two things to the decoder namely a compressed version of the residual block and instructions for creating the prediction
 
-- The decoder recieves this information and then decompresses the residual block and creates the same prediction as the encoder by following the instructions previously sent. The decoder then adds the prediction block to the decompressed residual block to create a decoded block. By doing this for every block in the frame, the decoder reconstructs a complete video frame
+- The decoder receives this information and then decompresses the residual block and creates the same prediction as the encoder by following the instructions previously sent. The decoder then adds the prediction block to the decompressed residual block to create a decoded block. By doing this for every block in the frame, the decoder reconstructs a complete video frame
 
 - Usually the difference or residual block , when visualized, appears to have much less visual information than the original. Each sample in the residual block has a value that can be positive or negative
 
-- Because the prediction block is reasonably similar to the original block, most of the residual samples are small positive or negative numbers. close to zero
+- Because the prediction block is reasonably similar to the original block, most of the residual samples are small positive or negative numbers, close to zero
 
 - Small magnitude or zero samples are much easier to compress than the original pixel values
 
@@ -196,7 +196,11 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Transform and Quantization Process
 
-- The output of the prediction process is a residual block, which is also the input to the transform and quantization process. The transform process converts this block of residual samples into a block of transform coefficients. In itself, the transform does not remove or reduce information. Instead, it represents the block in a different form or domain. The quantization process reduces the precision and the dynamic range of eahc of the transform coefficients. Quantization is a lossy process i.e. it removes information and is not reversible
+- The output of the prediction process is a residual block, which is also the input to the transform and quantization process
+
+- The transform process converts this block of residual samples into a block of transform coefficients. In itself, the transform does not remove or reduce information. Instead, it represents the block in a different form or domain
+
+- The quantization process reduces the precision and the dynamic range of each of the transform coefficients. Quantization is a lossy process i.e. it removes information and is not reversible
 
 - A two-dimensional transform converts a block of image samples into a block of transform coefficients. The transform coefficients represent the spatial frequency content in the original block of samples
 
@@ -204,15 +208,15 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - An example of a 4x4 transform is the Discrete Cosine Transform (DCT). There are 16 samples in a 4x4 image block and there are 16 coefficients of the transform one corresponding to each of the 16 basis patterns
 
-- The top-left pattern is a flat block, corresponding to zero frequency or 'DC'. Moving to the right, each pattern increases in frequency in the horizontal direction. Moving down, each pattern increases in frequency in the vertical direction. The lowest-right pattern is a chequerboard of horizontal and vertical frequencies
+- The top-left pattern is a flat block, corresponding to zero frequency or 'DC'. Moving to the right, each pattern increases in frequency in the horizontal direction. Moving down, each pattern increases in frequency in the vertical direction. The lowest-right pattern is a checkerboard of horizontal and vertical frequencies
 
 - Any 4x4 block of pixels or samples can be created by weighting and combining the 4x4 basis patterns. Different weights (i.e. coefficients) produce different blocks of samples when combining the patterns
 
 - The transform does not compress data. Rather it represents the information from the original block in a form that may be more easily compressible
 
-- Quantization reduces the precision fo every coefficient in the block, which has the effect of setting small-valued or insignificant coefficients to zero. It is an irreversible or "lossy' process. The information removed during Quantization cannot be restored later
+- Quantization reduces the precision of every coefficient in the block, which has the effect of setting small-valued or insignificant coefficients to zero. It is an irreversible or "lossy' process. The information removed during Quantization cannot be restored later
 
-- The behaviour of this process can be controlled by a quantization parameter which affects the strength of quantization. A larger QP results in more quantization i.e. greater loss of precision but also results in more compression
+- The behavior of this process can be controlled by a quantization parameter which affects the strength of quantization. A larger QP results in more quantization i.e. greater loss of precision but also results in more compression
 
 - QP is an important control parameter in a video codec because it has a direct effect on compression and quality
 
@@ -230,13 +234,15 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - First certain values are pre-processed i.e. converted into a suitable form for compression. Then, the processed values are entropy encoded i.e. coded into a compressed bitstream. Two commonly used forms of entropy coding are variable-length coding and arithmetic coding
 
-- Preprocessing takes advantage of the statistical behaviour of certain values produced by the video encoder
+- Preprocessing takes advantage of the statistical behavior of certain values produced by the video encoder
 
-- Quantized transform coefficients tend to follow particular distributions. Typically, larger non-zero values are clustered around the top-left or Dc coefficient with smaller or zero values towards the lower right or highest frequencies. The two-dimensional block of transform coefficients is converted to a one-dimensional array in a scanning pattern such as a zig-zig scan. The effect is generally to concentrate the significant non-zero coefficients together. This process is known as coefficient-reordering
+- Quantized transform coefficients tend to follow particular distributions. Typically, larger non-zero values are clustered around the top-left or DC coefficient with smaller or zero values towards the lower right or highest frequencies. The two-dimensional block of transform coefficients is converted to a one-dimensional array in a scanning pattern such as a zig-zig scan. The effect is generally to concentrate the significant non-zero coefficients together. This process is known as coefficient-reordering
 
-- Prediction parameters and QP tend to be highly correlated amongst neighbouring blocks in a coded frame. These parameters can be efficiently coded using differential prediction. For example, the encoder forms a predicted QP based on previously transmitted Qp values. Instead of sending the QP itself, the encoder calculates and sends the difference between the predicted and actual QP. The decoder receives the differential value, forms the same prediction and adds the differential to the prediction to construct the QP. A similar approach can be taken for motion vectors, prediction modes and prediction block sizes, etc.
+- Prediction parameters and QP tend to be highly correlated amongst neighboring blocks in a coded frame. These parameters can be efficiently coded using differential prediction. For example, the encoder forms a predicted QP based on previously transmitted QP values. Instead of sending the QP itself, the encoder calculates and sends the difference between the predicted and actual QP. The decoder receives the differential value, forms the same prediction and adds the differential to the prediction to construct the QP. A similar approach can be taken for motion vectors, prediction modes and prediction block sizes, etc.
 
-- After the pre-processing stage covered above, the original video sequence has been converted into a set of parameters and value sometimes described as symbols. The entropy encoding process converts the symbols comprising a coded video sequence into an efficient binary form, a compressed bitstream
+- After the pre-processing stage covered above, the original video sequence has been converted into a set of parameters and values sometimes described as symbols
+
+- The entropy encoding process converts the symbols comprising a coded video sequence into an efficient binary form, a compressed bitstream. Basically going from base 10 to base 2
 
 - Entropy encoding is a mapping between symbols and bits. There are different types of mappings such as:
 
@@ -244,7 +250,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
   2. Variable-length encoding: A symbol is mapped to a binary code that may have a variable number of bits, depending on the value of the symbol. Typically, shorter binary codes are assigned to values that occur frequently (with a high probability) and other longer binary codes are assigned to values that occur less frequently (with a low probability). Variable-length codes may be structured, i.e. capable of algorithmic construction, such as the Exponential-Golomb (Exp-Golomb). Exp-Golomb codewords can be constructed according to a pattern: n leading zeroes, followed by a 1, followed by an n-bit binary word. An Exp-Golomb codeword can be constructed for any index value. Alternatively, variable-length codewords may be designed specifically for a particular value or set of values. For example, Context-Adaptive Variable-Length Coding (CAVLC) for transform coefficients in H264/AVC uses a mapping that is specific to the structure and values found in a block of transform coefficients. Variable-length codewords for video coding should be uniquely decodable so that there is no ambiguity in the value that is to be decoded. A limitation of variable-length encoding is that each symbol must be represented by an integral (whole) number of bits. In fact, the most efficient mapping for a symbol with probability of occurrence P is log2(1/P) bits, which may be a fractional number rather than an integer
 
-  3. Binary arithmetic encoding: In an arithmetic coder each symbol is mapped to a range or interval so that a series of symbols can be represented by a fractional number. This fractional number is in turn mapped to a binary code. Arithimetic coding does not require each symbol be individually mapped to an integer number of bits. Instead, symbols are represented by a fractional number of bits, and as the number of symbols represented by a single number increases, arithmetic coding can approach the ideal mapping of log2(1/P) bits per symbol. In a practical video codec, several compromises are made when implementing arithmetic coding. General arithmetic coding, in which a symbol can take any one of multiple values, can be replaced with binary arithmetic coding, in which symbols are binarised i.e. converted into a binary representation, prior to encoding, such that the arithmetic coder only works on binary values. Computationally intensive multiplications or divisions can be replaced with approximations, and the range of potential values for each interval may be restricted in order to simplify processing
+  3. Binary arithmetic encoding: In an arithmetic coder each symbol is mapped to a range or interval so that a series of symbols can be represented by a fractional number. This fractional number is in turn mapped to a binary code. Arithmetic coding does not require each symbol be individually mapped to an integer number of bits. Instead, symbols are represented by a fractional number of bits, and as the number of symbols represented by a single number increases, arithmetic coding can approach the ideal mapping of log2(1/P) bits per symbol. In a practical video codec, several compromises are made when implementing arithmetic coding. General arithmetic coding, in which a symbol can take any one of multiple values, can be replaced with binary arithmetic coding, in which symbols are binarised i.e. converted into a binary representation, prior to encoding, such that the arithmetic coder only works on binary values. Computationally intensive multiplications or divisions can be replaced with approximations, and the range of potential values for each interval may be restricted in order to simplify processing
 
   4. Context adaptation: Variable-length encoding and arithmetic encoding rely on knowledge of symbol probabilities to provide maximum compression. Early video coding standards such as MPEG-2 and H263 used pre-determined probability tables derived from analysis of generic video sequences. More recently, H264 and HEVC employ context adaptation, in which symbol probabilities are adapted based on the actual statistics of the current video sequence. The video encoder and decoder measure the frequency of occurrence of symbol values and maintain a running total of the probability of each value occurring. Along with statistics from neighboring, previously coded values, these probability totals can be used to derive the codewords (VLC) or ranges (arithmetic coding)
 
@@ -260,9 +266,29 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - In network transmission, the coded sequence may be transmitted over a packet network such as the Internet. The sequence must be packetized i.e. split up and placed in network packets for transport. The syntax of a coded video sequence is typically designed to accommodate packetized transmission. For example, important header information such as sequence parameters may be sent in an initial packet and at regular intervals. Each slice or picture may be sent in a separate packet, or multiple slices may be sent in a packet. Resynchronization points (e.g. intra coded pictures that can be decoded in isolation from other data, are inserted at frequent intervals so that the clip can be played from random points and so that any transmission losses can be recovered)
 
-- In broadcast transmission (which includes transmission over a broadcast medium such as cable, terrestial or satellite TV) whats involved is the mapping of coded video and audio into a sequence of transmission packets, which is associated wiht a particular programme or channel. Transmission packets from multiple programmes are multiplexed together and carried via the broadcast medium. Issues such as random access, recovery from transmission errors and switching between channels or programmes are handled in a similar way to network transmission i.e. by inserting regular synchronization points in the coded sequence
+- In broadcast transmission (which includes transmission over a broadcast medium such as cable, terrestrial or satellite TV) whats involved is the mapping of coded video and audio into a sequence of transmission packets, which is associated with a particular programme or channel. Transmission packets from multiple programmes are multiplexed together and carried via the broadcast medium. Issues such as random access, recovery from transmission errors and switching between channels or programmes are handled in a similar way to network transmission i.e. by inserting regular synchronization points in the coded sequence
 
 #### The Decoder
+
+- Decoding the compressed video sequence involves reversing the steps of the encoder
+
+- An entropy decoder reads the compressed bitstream, parses the arithmetic, variable-length or fixed-length coded data and recovers the sequence of symbols that comprise the video sequence
+
+- Pre-processing steps such as predictive coding and coefficient scanning are reversed. The decoder constructs the same predictors as the encoder e.g. motion vector predictors and uses these to recover the coding parameters. Decoded coefficients are inverse scanned to reconstruct blocks of quantized transform coefficients
+
+- The reverse of the forward quantization process i.e. the quantization of transform coefficients carried out during encoding is rescaling
+
+- It is often referred to as inverse quantization but it is important to note that it is not a fully reversible process. Because forward quantization removes information removes information, rescaling does not recover the original transform coefficients but instead produces a decoded set of coefficients with some loss of precision
+
+- Transform coefficients that were originally low-valued and were set to zero by the quantization process will remain zero after rescaling. Other coefficients will be restored to their approximate magnitude but may have lost precision
+
+- The inverse transform converts the block of decoded transform coefficients into a block of decoded images or residual samples. Because of the loss of information in the transform coefficients, the decoded image block will not be identical to the original image block
+
+- The decoder creates the same prediction block or MB that the encoder created by generating a spatial or motion-compensated temporal prediction using the same prediction parameters - modes, motion vectors, etc as the encoder
+
+- This prediction block is added to the decoded residual samples from the output of the inverse transform. The result is a decoded block or MB that can be displayed and/or used for further predictions
+
+- As each MB is reconstructed and decoded, it can be places in its correct position in a decoded frame. Once a complete decoded frame has been built up, it is available for output and/or storing in a decoded frame buffer to form further predicted frames
 
 #### The Video Codec Model
 
@@ -274,8 +300,3 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 ### Transform and Quantization
 
-### Entropy Coding
-
-### Coded Video Filtering
-
-### Storing and Transporting Coded Video
