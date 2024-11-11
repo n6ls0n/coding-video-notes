@@ -15,6 +15,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
   - [Storing and Transmitting the Coded Bitstream](#storing-and-transmitting-the-coded-bitstream)
   - [The Decoder](#the-decoder)
   - [The Video Codec Model](#the-video-codec-model)
+  - [Video Codec Performance](#video-codec-performance)
 - [Structures](#structures)
   - [Coded Video_Sequence to Picture](#coded-video_sequence-to-picture)
   - [Coded Video_Picture to Basic Unit](#coded-video_picture-to-basic-unit)
@@ -291,6 +292,28 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 - As each MB is reconstructed and decoded, it can be places in its correct position in a decoded frame. Once a complete decoded frame has been built up, it is available for output and/or storing in a decoded frame buffer to form further predicted frames
 
 #### The Video Codec Model
+
+- Most mainstream video codecs have all adopted the same basic structure. The encoder applies the following steps to convert basic units e.g. a MB, 16x16 pixels into a compression bitstream:
+
+  1. Motion compensated prediction from one or more previously coded frames and/or intra prediction from previously coded samples in the same frame
+
+  2. Subtraction of a motion-compensated prediction from the current basic unit to form a residual unit, such as a residual MB
+
+  3. Block transform and quantization to form blocks of quantized coefficients
+
+  4. Entropy encoding of quantized coefficients and side information such as motion vectors and headers
+
+  5. Rescaling (inverse quantization), inverse transform and addition of motion-compensated prediction to reconstruct a local copy of the decoded frame or field
+
+- The decoder carries out the following steps to convert a compressed bitstream into a decoded sequence of frames or fields:
+
+  1. Entropy decoding to extract quantized coefficients, motion vectors and headers
+
+  2. Rescaling and inverse transform to form a residual unit
+
+  3. Motion compensated prediction and addition of the prediction to the residual
+
+#### Video Codec Performance
 
 ### Structures
 
