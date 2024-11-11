@@ -315,6 +315,42 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Video Codec Performance
 
+- Most present-dayt codecs for consumer applications use lossy video compression, which means that the decoded video is not identical to the original video. Typically, the encoder introduces this loss during the quantization process. Once the visual data has been quantized, the lost data cannot be restored
+
+- The performance of a video codec i.e. how good it is at compressing video, can be evaluated along three dimensions:
+
+  1. Compression or rate: How much is the video compressed by? How much space do I need to store the compressed video file? What bitrate do I need to transport the compressed video?
+
+  2. Computation: How complex is the process of encoding or decoding? Can I encode or decode in real time on a particular processor? How much memory e.g. RAM, do I need during encoding or decoding? How much power does the encoding or decoding consume?
+
+  3. Quality or distortion: How does the decoded video look? DOes it look indistinguishable from the original i.e. visually lossless? Are there obvious distortions such as blockiness or blurring? Does the decoded video look smooth or jerky? Is the quality good enough for the application?
+
+- When comparing video codecs or determining whether to include a proposed modification during the development of a video coding standard, it is common practice to measure the rate-distortion performance. This involves comparing the decoded video quality across a range of compressed bitrates
+
+- The relationship between quality and coded bitrate is known as a rate-distortion curve
+
+- A better codec or codign method will tend to produce higher-quality decoded video across a range of bitrates
+
+- It is often the case that better-rate distortion performance comes at a cost of higher computation at the encoder, decoder or both\
+
+- Bitrate or compressed file size is relatively easy to measure simply count the number of encoded bits per second of the video i.e. encoded bitrate or the number of bytes in the encoded video file. Computation can be measured or estimated for example by counting the seconds it takes to encode a complete video file
+
+- However, visual quality is a different matter because the question of 'how good does this video look?' is fundamentally a subjective question
+
+- We cannot fully measure or predict how a human observer will assess the quality of a video
+
+- We can approximate or estimate a visual quality in several ways, which can be categorized as subjective or objective methods
+
+- One popular subjective test is the double stimulus continuous quality scale (DSCQS) method
+
+- A popular objective quality measure is the Peak signal-to-noise ratio. It is expressed in decibels, where a higher number implies better visual quality
+
+  $$PSNR_{db} = 10 \cdot \log_{10} \left(\frac{(2^n - 1)^2}{MSE}\right)$$
+
+- It is a simple calculation and has been widely used to estimate the quality of compressed versus original video images
+
+- The PSNR metric suffers from several limitations. PSNR requires an unimpaired original image for comparison but this may not be available in every situation. PSNR does not correlate particularly well with subjective video quality measures such as ITU-R 500. For a given image or image sequence, high PSNR usually indicates high quality and low PSNR usually indicates low quality. However, a specific value of PSNR does not equate to an absolute subjective quality. PSNR and similar metrics are adequate for comparisons of different encodings of the same video sequence but not necessarily adequate for comparisons across different video materials
+
 ### Structures
 
 ### Intra Prediction
