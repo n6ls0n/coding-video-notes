@@ -353,6 +353,23 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 ### Structures
 
+- A complete video clip or sequence is processed by a video encoder to create a compressed bitstream. In order to handle the large amount of image data in a sequence of video frames, the encoder splits it up into manageable structures
+
+- A coded video sequence is a series of coded pictures that, when decoded, will play back as a complete video clip. Coded frames or pictures may be organized into multi-picture structures during encoding such as Group of Pictures
+
+- Each picture may be coded as a single unit or in multiple sections known as slices or tiles. Each slice or tile contains one or more Basic Units such as Macroblocks or Coding Tree Units
+
+- The Basic Unit is a unit of data handled by the encoder and decoder
+
+- In present-day codecs, it is square
+
+- In the older MPEG-2 and H.264/AVC standards, it is 16 x 16 pixels, up to 64 x 64 pixels in the H.265/High Efficiency Video Coding (HEVC) standard and up to 128 x 128 pixels in the H.266/VVC standard
+
+- The Basic Unit may be split into smaller blocks for processing steps such as prediction and transformation
+
+#### Coded Video Sequence to Picture
+
+
 ### Intra Prediction
 
 ### Inter Prediction
