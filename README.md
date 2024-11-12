@@ -404,6 +404,52 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Coded Video Sequence to Picture
 
+- A coded video sequence may correspond to a video clip, a programme or a section of a programme. In addition, a coded sequence may include parameter sets, which are coded structures that contain the common parameters that are needed for decoding and that apply to multiple coded pictures
+
+- For example, an H264 or H265 Sequence Parameter Set (SPS) contains parameters that are common to an entire coded sequence. A Picture Parameter Set (PPS) contains further parameters that are common to one or more pictures in a coded sequence
+
+  - Assume we have a coded sequence. One SPS contains the decoding parameters for the entire coded sequence. The first PPS inherits some common parameters from the SPS and includes further decoding parameters
+
+  - In order to decode slices of coded video, a decoder needs parameters from the SPS and the currently active PPS
+
+  - A single encoded video frame is a coded picture or a coded frame. Decoding a coded picture should produce a complete, displayable video frame. Pictures or frames may be coded without prediction from other pictures or frames using intra-coding and/or with prediction from other pictures or frame using inter-coding
+
+  - Pictures or frames may be grouped into multi-picture structures. For example, random access to a video sequence requires an independently decodable picture such as an intra-coded picture and it is common to insert intra-pictures at intervals in a sequence
+
+  - In many applications of video encoding, coded pictures are organized as Groups of Pictures (GoP) where each GoP contains an intra-coded picture followed by a number of inter-coded pictures
+
+  - This can make it easier for a user to join a video stream part-way through or to switch to an earlier or later part of a video clip - a process known as random access - and/or recover from transmission errors by seeking to the next intra-coded picture
+
+- A sequence is a series of coded frames or pictures representing a complete video. This could be for example a programme, a clip or a scene. Picture or frames in the sequence will typically have common characteristics such as:
+  1. Spatial Resolution e.e. Standard Definition, High Definition or other resolutions
+  2. Frame rate
+  3. Color Depth and Color space
+  4. Coding parameters such as Profile, Level and CU size
+
+- Pictures in the sequence may be arranged with certain structural relationships. For example, a GoP is a repeating, multi-picture structure consisting of intra-coded picture or I-picture, with a number of inter-coded pictures. The inter-coded pictures could be P-pictures, in which each block is predicted from one frame or B-pictures in which each block is predicted from two frames
+
+- While the coded frames are typically intended for playback and display, a coded sequence may include non-displayed coded data such as:
+  1. Parameter sets: These are coded data structures containing information that may be common to multiple coded pictures in the sequence such as the common characteristic above
+  2. Redundant frame: These may contain redundant picture data that are not intended to be displayed unless the main or primary pictures are lost or damaged
+  3. Non-displayable reference frames: These are pictures that may be used for prediction but are not intended for display, such as automatically generated reference frames or background scene elements
+
+- A coded picture is a complete compressed frame or a field or pair of fields in the case of an interlaced video sequence
+
+- It may be made up of multiple section such as slices and/or tiles. Parameters required to decode the picture may be coded in a header such as a picture header, in parameter sets and/or in one or more slice headers. A coded picture may have one of a number of types or characteristics such as:
+  1. Intra-coded or I-picture: The picture is coded without any prediction from other coded pictures using intra-only prediction
+  2. Inter-coded, P or B-picture: The picture may be coded using prediction from one (P) or more than one (B) previously coded pictures
+  3. Used or not used for prediction: The picture may be used or not used for inter prediction of further coded pictures
+  4. Resynchronization: The picture triggers a reset of coding parameters at the decoder and can be used as a resynchronization point
+  5. Access/splicing point: The picture is intended to provide an access point for joining or splicing video clips together
+
+- Coded pictures in a video sequence may be arranged in multi-picture structures. The early MPEG-1 and MPEG-2 standards introduced the concept of GoPs which historically consisted of an I-picture followed by a series of P or B pictures
+
+- Recent standards such as H264 , HEVC and VVC have introduced considerable flexibility in multi-picture structures
+
+- Such structures can serve a number of purposes including:
+  1. Improved compression efficiency by enabling an encoder to make efficient use of multiple reference pictures
+  2. Limiting decoding delay by restricting the number of pictures that need to be decoded before any given picture can be completely decoded and displayed
+  3. Providing resynchronization points by including I-pictures at regular intervals
 
 ### Intra Prediction
 
