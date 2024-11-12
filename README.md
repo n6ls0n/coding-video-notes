@@ -21,7 +21,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
   - [Coded Video_Picture to Basic Unit](#coded-video-picture-to-basic-unit)
   - [Coded Video_Basic Unit to Block](#coded-video-basic-unit-to-block)
   - [HEVC Coding Structures](#hevc-coding-structures)
-  - [Structures In Versatile Video Coding_H266](#structures-in-versatile-video-coding_h266)
+  - [Structures In Versatile Video Coding H266](#structures-in-versatile-video-coding-h266)
 - [Intra Prediction](#intra-prediction)
   - [The Intra Prediction Process](#the-intra-prediction-process)
   - [Intra Prediction Modes](#intra-prediction-modes)
@@ -496,9 +496,9 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - This means that a picture coded with a uniform number of Basic Units per slice may result in coded slices with a significant variation in coded size. It may be preferable to choose slice sizes to maintain a roughly constant coded slice
 
-- Increasingly, video codecs are handling larger frame sizes such as HD, 4K and above. Modern processors can contain mulitple core capable of operating in parallel
+- Increasingly, video codecs are handling larger frame sizes such as HD, 4K and above. Modern processors can contain multiple core capable of operating in parallel
 
-- Video can be decoded quickly and more efficiently if multiple sections of a coded frame can be decoded simultaneously by mulitple processing cores and/or multiple processing threads
+- Video can be decoded quickly and more efficiently if multiple sections of a coded frame can be decoded simultaneously by multiple processing cores and/or multiple processing threads
 
 - A picture may be coded as one or more tiles. Unlike slices, which may or may not be rectangular, tiles are always rectangular
 
@@ -513,9 +513,60 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 #### Coded Video Basic Unit to Block
 
+- The basic unit of coding in a standard-based video codec is a Macroblock or Coding Tree Unit. Each basic unit may be split or partitioned into structures for coding, prediction and transformation
+
+- A video codec handles image data in units of square or rectangular blocks
+
+- How big should these blocks be?
+
+- The answer may depend on the size and content of each video frame. It may be more efficient to code the moving sections of the frame with smaller blocks and code the more static portions using larger blocks
+
+- Early codecs adopted a one-size fit all approach fixing the basic unit size - the Macroblock size - at 16 x 16 pixels and the basic transform block at 8 x 8 pixels. However the best coding unit (CU) might depend on the content of the frame
+
+- Later H264 introduced some flexibility with a fixed basic unit size - a 16 x16 Macroblock - but with flexible choices of block size for prediction and transform
+
+- H265/HEVC and VVC have extended this flexibility and allowed the CU size to vary depending on the local scene content
+
+- In HEVC, a fixed size Coding Tree Unit may be partitioned into multiple CUs with varying sizes
+
+- The fixed-size CTU allows a decoder to know exactly how much processing power and local storage are required to handle each CTU whereas the varying-size CU makes it possible to adjust the CU size depending on image content
+
+- Pixels or samples are grouped into prediction areas such as Prediction Units (PUs) each of which is predicted by using previously coded data such as neighbouring areas using intra-prediction or previously coded frames using inter-prediction
+
+- Prediction areas are typically square or rectangular blocks
+
+- All the samples in a PU are predicted in the same process
+
+- Codecs such as H264, HEVC, and VVC support flexible choices of PU sizes and types
+
+- Choosing the prediction structure involves questions such as:
+  - How good is the prediction? In other words, how accurately does the prediction match the pixels or samples in the block
+  - How many bits does it take to encode the choice of PU?
+  - How many bits does it take to encode the type of prediction and parameters such as prediction mode and motion vectors
+
+  - PUs are usually square or rectangular blocks with dimensions that are powers of 2, making it relatively easy to signal the size and shape of the block with a minimal number of bits
+
+  - HEVC, an inter-predicted PU can be square or rectangular with certain specified dimensions
+
+  - Each HEVC CU can be split into one or more PUs and also into one or more TUs. Some CUs may be partitioned differently for prediction and transformation
+
+  - Signalling the prediction parameters for each PU may require a significant number of bits. Neighboring PUs often have similar parameters, such as motion vectors, reference frame choices and prediction modes, which can be used to reduce the number of bits required to signal prediction choices to the decoder
+
+- After prediction, blocks of residual samples are transformed, quantized and encoded
+
+- The size and shape of the region that is transformed, the Transform Unit (TU), affect compression performance
+
+- As with PUs, larger or smaller TUs may each be suitable of different areas of a frame. A larger TU size may be more efficient for homogenous areas where all the residual samples in a large area share similar characteristics. This tends to be the case for areas of low detail and/or uniform texture such as smooth background regions
+
+- A smaller transform size may be more suitable for detailed areas and/or where there is complex motion
+
+- HEVC makes it possible to split each CU into another quadtree, this time for the purpose of specifying transform units (TUs)
+
+- Each TU is a square region of samples that are transformed and quantized
+
 #### HEVC Coding Structures
 
-#### Structures In Versatile Video Coding_H266
+#### Structures In Versatile Video Coding H266
 
 ### Intra Prediction
 
