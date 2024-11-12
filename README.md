@@ -451,9 +451,67 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
   2. Limiting decoding delay by restricting the number of pictures that need to be decoded before any given picture can be completely decoded and displayed
   3. Providing resynchronization points by including I-pictures at regular intervals
 
+- A coded picture is a compressed representation of a single video frame or a coded field or pair of fields for interlaced video. In standard-based video codecs, a picture is processed in Basic Units such as MacroBlocks or Coding Tree Units
+
+- The Basic Unit usually has a fixed size within the coded picture
+
+- The choice of Basic Unit is a compromise: a larger size may be more efficient for representing larges areas of low detail in frame but requires more memory and processing power, whereas a smaller size may be more computationally simpler but less efficient for compression
+
+- Each picture is arranged as a regular grid of Basic Units
+
+- The Basic Units within a picture may themselves be arranged into structures such as Slices and/or tiles
+
+- A slice is a series of Basic Units in a raster scan order and slices may contain an irregular number of Basic Units
+
+- A tile is a square or rectangular structure containing multiple Basic Units
+
+- Slices and/or Tile may be useful for:
+  1. Mapping coding video data to transmission packets, for example, by sending each slice in a seperate network packet
+  2. Handling errors, for example, resynchronizing at the start of the next error-free slice or tile
+  3. Parallel processing, which would involve processing multiple slices or tiles simultaneously for faster encoding or decoding
+
+- Each coded picture is made up of a series of Basic Units. A Basic Unit is a regular-sized square region. It's terminology varies from standard to standard:
+  1. Macroblock: A Basic Unit consisting of 16 x 16 luma samples and associated chroma samples, used in VP8 H264 and older standards
+  2. Supermacroblock: A Basic Unit consisting of 64 x 64 or 128 x 128 luma samples and associated chroma, used in VP9 and AV1
+  3. Coding Tree Unit: A Basic Unit consisting of N x N array of luma samples and associated chroma. IN H265/HEVC, N can be 16, 32 or 64 and is set at the sequence level via SPS. In H266/VVC, N can range from 32 to 128
+
+- An encoder has to process and store all the data and parameters of a Basic Unit. A larger Basic Unit requires more computational power and more local storage and so a smaller Basic Unit may be more suitable for decoder with low processing capabilities
+
+- A certain number of parameters must be coded for each Basic Unit, unless the Basic Unit is skipped i.e. not coded. It may be more efficient to minimize the number of Basic Units in a frame by using a larger Basic Unit size. Furthermore, the Basic Unit is typically the larger possible partition size for prediction and coding so a larger Basic Unit gives more flexibility in assigning block sizes to regions of the frame
+
+- Larger Basic Units can give better compression efficiency than smaller Basic Units can for high-resolution video e.g. HD and UHD/4K resolutions. This is because image features such as foreground and background objects are likely to take up a relatively larger number of pixels in a high-resolution video frame
+
+- A picture may be coded as one or more slices, each of which is a contiguous series of Basic Units. Usually the picture is divided into a set of slices in a raster scan order from top left to lower right. Each slice contains an integral number of Basic Units and the end of one slice is immediately followed by the beginning of the next slice
+
+- An encoder can use slices as a way of mapping coded data into packets or units for storage or transmission, for example, with each slice transmitted in a separate network packet
+
+- If a packet is lost or corrupted, decoding can restart at the beginning of the next slice,,albeit with potential problems if other slices or pictures are predicted from the lost slice
+
+- Prediction and inherited parameters may be restricted across slice boundaries
+
+- An encoder may choose a fixed size for each slice, for example, a single slice per picture, or a fixed number of Basic Units per slice
+
+- A potential disadvantage of fixed-size slices is that the amount of coded data per slice may vary considerably can can depend on whether the slice contains stationary background regions that are easy to predict or fast-moving foreground regions that are hard to predict
+
+- This means that a picture coded with a uniform number of Basic Units per slice may result in coded slices with a significant variation in coded size. It may be preferable to choose slice sizes to maintain a roughly constant coded slice
+
+- Increasingly, video codecs are handling larger frame sizes such as HD, 4K and above. Modern processors can contain mulitple core capable of operating in parallel
+
+- Video can be decoded quickly and more efficiently if multiple sections of a coded frame can be decoded simultaneously by mulitple processing cores and/or multiple processing threads
+
+- A picture may be coded as one or more tiles. Unlike slices, which may or may not be rectangular, tiles are always rectangular
+
+- A coded picture is partitioned into regular equally sized tiles which can be square or rectangular
+- During encoding, certain operations such as intra prediction, filtering and prediction mode signalling may be constrained so that there are no data dependencies across tile boundaries.
+
+- This means that a decoder can process multiple tiles in parallel, decoding each tile without waiting for data in another tile to be decoded
+
+- Constraining encoding dependencies in this way may cause a loss of compression efficiency as some prediction choices will not be available for Basic Units next to a tile boundary
+
+- However, splitting a frame into regular-sized tiles that can be independently decoded makes it possible to decode large frames efficiently in parallel which has the potential to increase decoding speed and efficiency
+
 ### Intra Prediction
 
 ### Inter Prediction
 
 ### Transform and Quantization
-
