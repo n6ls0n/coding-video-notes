@@ -367,6 +367,41 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - The Basic Unit may be split into smaller blocks for processing steps such as prediction and transformation
 
+- Early video codecs had limited processing and storage capacity and so processing was applied to small regions such as 8 x 8 blocks
+
+- Memory and processing capacity have improved significantly since then but nevertheless a codec breaks a sequence down into progressively smaller regions for processing
+
+- A complete sequence is divided or partitioned into groups of coded frames or pictures then into individual coded frames then regions within a frame then square or rectangular blocks
+
+- A typical video scene is made up irregular-shaped regions with varying textures, colors and movement behavior. This does not correspond neatly to a regular block-based structure.
+
+- A codec attempts to model and predict the behavior of the video sequence, which implies that irregular structures might produce better compression efficiency
+
+- However, irregular or changing structures need to be communicated to the decoder, whereas a fixed or repetitive structure can often be inferred and may not require to be communicated
+
+- For example, if the Macroblock size is fixed at 16 x 16, there is no need to communicate the size from the encoder to the decoder
+
+- There is a trade-off between using structures such as fixed-size code blocks versus structures that can change size and perhaps shape. Fixed-size blocks are simple to process and do not require many bits to communicate the structure to the decoder, but they may be a poor match to the actual video content
+
+- Structures that can change size and shape may be capable of more accurately reflecting actual video content, but they may be more complex to process and require a significant number of bits to communicate
+
+- Most practical codecs make a compromise, which allows a certain amount of variation in the structures whilst basing the structures on rectangular or square blocks
+
+- Assuming we have a coded video frame with an overlay of prediction block structures. The encoder would choose between a range of square and rectangular block sizes in order to optimize compression of regions with different amounts of detail
+
+- In a relatively homogenous area, the encoder could choose a larger block size such as 64 x 64
+
+- In complex moving areas, the encoder could choose smaller block sizes that more closely follow the movement and object boundaries
+
+- A coded video sequence is stored and transmitted before decoding and playbakc. Transmission over a network requires an efficient mapping between the coded bitstream and network packets.
+
+- Other challenges include:
+  1. Supporting random access so that a user can join part-way through a clip or navigate to a suitable playback point rather than always having to start from the beginning of the sequence
+
+  2. Streaming playback, achieving a compromise between good playback quality and avoiding stalling and rebuffering
+
+  3. Handling errors so that a lost packet or corrupted section does not ruin playback of the entire clip
+
 #### Coded Video Sequence to Picture
 
 
