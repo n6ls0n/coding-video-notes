@@ -609,6 +609,32 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
   4. Parameter Set Activation: Each slice header contains a PPS identifier. When a given PPS is referred to in a slice header for the first time in a sequence, thr PPS is activated and is then used for that slice and any further slices in the same coded picture. When an SPS is referred to in a PPS for the first time in a sequence, the SPS is activated. When the VPS is referred to in an SPS, the VPS is activated. When a slice is decoded referring to a different PPS identifier, the old PPS is deactivated and the new PPS is activated
 
+- Profiles and Levels specify certain restrictions on the coded bitstream in terms of the features and algorithms that may be in use and also the range of values that a decoder might encounter
+
+- A HEVC bitstream contains an identifier of a Profile and Level in the SPS and an HEVC decoder can use this to determine whether it has the capability to actually decode the bitstream
+
+- A Profile indicates which subset of the HEVC features and algorithms may be present in the coded bitstream
+
+- A Level indicates maximum ranges of certain values that a decoder may encounter in a coded bitstream. Each Level defines a maximum number of luma samples per second, a maximum Coded Picture Buffer Size, a maximum number of slice segments, a maximum number of tiles per picture and a maximum coded bitrate. Each Level from 1 to 6.2 effectively limits the data rate and video resolution that a decoder can encounter. A HEVC decoder that has the computational capability to handle a certain level should also be able to handle every level below
+
+- HEVC's Reference Picture Set (RPS) can be used to signal repeating picture structures. The classic GoP, introduced in the early MPEG standards, consists of an I-picture together with a number of P - and/or B-pictures
+
+- The RPS enables this and other structures to be efficiently communicated to the decoder
+
+- In an HEVC bitstream, the inter-dependencies between coded pictures are captured by RPS entries for each picture, which indicate the choice of the reference picture(s) as an offset relative to the current picture
+
+- The RPS is usually arranged as a temporal hierarchy of layers with the pictures with more dependencies (needing more neighboring pictures to be predicted) higher up in the hierarchy and vice-versa
+
+- A decoder can decode all the pictures to produce a full frame rate output sequence or it can discard one or more layers, starting at the uppermost layer to produce a lower frame rate output with less decoding processing
+
+- The decoder needs to know the complete list of reference pictures for each current picture. Communicating this for every picture may be expensive in terms of coding overhead
+
+- In practical scenarios, RPSs often repeat, which means that the RPS for picture N can be used again for picture N + M at some point in the future
+
+- Using HEVC, an encoder can specify a limited number of RPSs in the SPS
+
+- Individual coded pictures or slices refer to one of these RPSs. This means that it is not necessary to send a complete specification of reference pictures for every picture. Instead, the encoder only needs to communicate an index identifying a pre-existing RPS
+
 #### Structures In Versatile Video Coding H266
 
 ### Intra Prediction
