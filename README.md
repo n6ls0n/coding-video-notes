@@ -531,7 +531,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - The fixed-size CTU allows a decoder to know exactly how much processing power and local storage are required to handle each CTU whereas the varying-size CU makes it possible to adjust the CU size depending on image content
 
-- Pixels or samples are grouped into prediction areas such as Prediction Units (PUs) each of which is predicted by using previously coded data such as neighbouring areas using intra-prediction or previously coded frames using inter-prediction
+- Pixels or samples are grouped into prediction areas such as Prediction Units (PUs) each of which is predicted by using previously coded data such as neighboring areas using intra-prediction or previously coded frames using inter-prediction
 
 - Prediction areas are typically square or rectangular blocks
 
@@ -565,6 +565,49 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 - Each TU is a square region of samples that are transformed and quantized
 
 #### HEVC Coding Structures
+
+- A HEVC is stored or transmitted as a sequence of network access layer units (NAL units or NALUs)
+
+- In this standard, a sequence would begin with parameter sets, each containing common decoding parameters that a decoder uses in the decoding of the coded video data. Each coded video frame or picture is sent as a series of one or more video coding layer (VCL) NAL units, each of which contains a coded slice segment. The slice segment can be decoded to generate the sequence of decoded video frames
+
+- HEVC Parameter Sets are used to communicate coding parameters that may be common to many or all of the pictures in a video sequence
+
+- Each parameter set may be encoded in its own NAL unit i.e. it is coded as a separate structure from the pictures in the sequence
+
+- Parameter sets cna be sent as part of the coded bitstream or they may be communicated or defined separately and loaded as part of an agreed initialization sequence, without actually transmitting the parameter set from encoder to decoder
+
+- The following are the HEVC Parameter Sets:
+  1. Video Parameter Set (VPS): THis may be sent once at the start of a coded sequence or communicated 'out of band'. For example, a decoder could use a VPS that is pre-defined in the decoder software. Most of the parameters in the VPS relate to scalable or multiview coding and can be ignore for non-scalable coding with a single video layer. The Profile and Level discussed further below can be specified in the VPS and/or in the SPS
+
+  2. SPS: This is sent once at the start of the coded sequence for non-scalable coding or communicated out of band. The parameters in the SPS are common to all the coded pictures in the sequence and include:
+      - VPS identifier, referring to the VPS in use for this sequence
+      - Profile and Level identifiers, as part of the profile_tier_level syntax structure
+      - SPS identifier, a number in the range of 0 to 15 that identifies this SPS. PPSs use this identifier to indicate the inherited SPS
+      - Spatial and temporal resolution
+      - Color space format, 4:2:0, 4:2:2 or 4:4:4
+      - Coding Tree Block (CTB) size, either 16 x 16, 32 x 32 or 64 x 64 luma samples
+      - Minimum CB size
+      - Minimum and maximum TB sizes
+      - Enable or disable certain coding tools such as sample adaptive offset (SAO) filter and pulse code modulation (PCM) mode\
+      \
+      SPS parameters place certain requirements on the decoder such as the ability to handle a particular frame size, color depth and CTU/CTB size. Such requirements may be determine whether or not a particular decoder is capable of decoding this sequence. For example, a decoder with the ability to handle only 8-bit samples can determine whether the sequence is within its capability by parsing the SPS
+      \
+      Sending these parameters just once in the SPS means that they do not need to be re-sent during the video sequence, which minimizes the overhead in the coded
+
+  3. Picture Parameter Set (PPS): The PPS contains parameters that may be common to some or all of the pictures in a sequence. Once a PPS has been received by a decoder it is available for activation i.e. for use in decoding. each coded slice refers to one PPS identifier, and all slices in a picture must use the same PPS. The PPS parameters include:
+      - SPS identifier, indicating the SPS in use for this sequence
+      - PPS identifier, a number in the range of 0 to 63 identifying this PPS. Coded slice can refer to any PPS that has already been received or is already available at the decoder
+      - Enable or disable certain decoding features, such as dependent slices, sign data hiding, Context Adaptive Binary Arithmetic Coding (CABAC) initialization per slice, transform skip and weighted prediction
+      - Initialize the quantization parameter (QP) for each slice using this PPS
+      - Number of active reference prediction for inter-prediction
+      - Wavefront parallel processing (enabled or disabled), using the flag entropy_coding_sync
+      - Multiple tiles enabled or disabled. If enabled, the tile widths and heights are specified in the PPS
+      -Parameters controlling the behavior of the in-loop deblocking filter
+      - Merge mode parameters, used in inter-coding
+      \
+      In general, the PPS contains parameters that may be common to multiple pictures thus reducing overhead, but that may have to change during a coded sequence. For example, an encoder may choose to switch to a different default QP at some point during the coding
+
+  4. Parameter Set Activation: Each slice header contains a PPS identifier. When a given PPS is referred to in a slice header for the first time in a sequence, thr PPS is activated and is then used for that slice and any further slices in the same coded picture. When an SPS is referred to in a PPS for the first time in a sequence, the SPS is activated. When the VPS is referred to in an SPS, the VPS is activated. When a slice is decoded referring to a different PPS identifier, the old PPS is deactivated and the new PPS is activated
 
 #### Structures In Versatile Video Coding H266
 
