@@ -527,7 +527,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - H265/HEVC and VVC have extended this flexibility and allowed the CU size to vary depending on the local scene content
 
-- In HEVC, a fixed size Coding Tree Unit may be partitioned into multiple CUs with varying sizes
+- In HEVC, a fixed size Coding Tree Unit (CTU) may be partitioned into multiple CUs with varying sizes
 
 - The fixed-size CTU allows a decoder to know exactly how much processing power and local storage are required to handle each CTU whereas the varying-size CU makes it possible to adjust the CU size depending on image content
 
@@ -704,6 +704,14 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 - After the slice segment header, the slice data consist of series of CTUs in raster order
 
 - If both the independent and dependent slice segments are used within a coded picture, a series of dependent slices inherit parameters from the preceding independent slice segment header until a new independent slice is received
+
+- In HEVC, the use of tiles is signalled with the tiles_enabled_flag in the PPS. If the flag is 1, the tiles are present in each picture which means that there may be more than one tile per picture, and the PPS further defined the number of tile rows and columns and indicates whether rows and columns are uniformly spaced
+
+- If not uniformly space, the width of each row or column is explicitly signalled
+
+- When each CTU in a picture is decoded, it is reconstructed in the appropriate place within a Tile. IN a similar way to slice segments, inter and intraprediction cannot cross tile boundaries. Loop filtering may or may not cross tile boundaries depending on the PPS. This makes it possible for the tile to be decoded in parallel
+
+- CTUs in a tile with more neighbours may end up being compressed more efficiently due to this fact
 
 #### Structures In Versatile Video Coding H266
 
