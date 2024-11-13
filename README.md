@@ -673,7 +673,37 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - Any RASLs associated with the BLA may not be successfully decodable since they depend on reference pictures prior to the splice point that no longer exists. A decoder encountering a BLA in a coded video sequence should therefore ignore any RASLs associated with the BLA i.e. those coded immediately after the BLA which means that a certain number of the original video frames might not be displayable. RADLs can be successfully decoded
 
--
+- For HEVC Coded Pictures, there is no separate picture header in the bitstream. Instead, what is sent is a series of one or more slice segments, each comprising a slice segment header and slice segment data
+
+- Each slice segment in picture shares the same POC Value PicOrderCntVal and refer to the same PPS. When a decoder identifies a new POC in a slice, this indicates that the slices is part of a new picture
+
+- The slice segment data consists of a series of CTUs. Each CTU is decoded and reconstructed in the appropriate position within the slice segment and if tiles are in use within the appropriate tile
+
+- H265/HEVC introduces the concept of slice segments. These can be considered as a mechanism for subdividing slices into smaller segments and/or a way to reduce the size of the headers for each of a collection of slice segments
+
+- In HEVC, a slice consists of one independent slice segment, with a complete slice header, followed optionally by one or more dependent slice segments, which each inherit some header syntax values from the independent slice segment
+
+- Predictions cannot cross slice segment boundaries as a CB/CU in one slice segment cannot be predicted from a CB/CU in a different slice segment
+
+- For intra-prediction, this means that samples outside of the current slice segment cannot be used to predict the current CB/CU and the prediction mode cannot be predicted based on blocks outside the current slice segment
+
+- For inter-prediction, this means that prediction parameters cannot be predicted from outside the current slice segment
+
+- For example, motion vectors predicted using Merge mode or Advanced Vector Prediction (AVMP) mode cannot be predicted from outside the slice segment. Loop filtering may or may not cross slice segment boundaries, depending on the parameter choice
+
+- Each picture is coded as a series of slice segments. Slice segments can be useful for packetization e.g. sending each slice segment in a separate network packet without the overhead of sending a full independent slice segment header in every packet. However, if the decoder encounters an error it will need to wait for the next complete slice header i.e. the next independent slice segment to obtain all the parameters necessary to continue decoding
+
+- An independent slice segment starts with a complete slice header, containing all the parameters necessary to decode the slice. Each dependent slice segment starts with a slice segment header that inherits some of its parameters from the slice header
+
+- All slice segments start with a section that includes a few basic parameters such as the PPS identifier and the slice segment address, indicating the position if the first CTU in the slice within the picture, in raster scan order
+
+- An independent slice segment header also includes a section which contains all the syntax elements that are necessary for decoding a slice
+
+- Tile entry points may optionally be included. These are pointers that enable the decoder to process tiles in parallel
+
+- After the slice segment header, the slice data consist of series of CTUs in raster order
+
+- If both the independent and dependent slice segments are used within a coded picture, a series of dependent slices inherit parameters from the preceding independent slice segment header until a new independent slice is received
 
 #### Structures In Versatile Video Coding H266
 
