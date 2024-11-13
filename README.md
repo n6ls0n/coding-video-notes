@@ -711,7 +711,55 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - When each CTU in a picture is decoded, it is reconstructed in the appropriate place within a Tile. IN a similar way to slice segments, inter and intraprediction cannot cross tile boundaries. Loop filtering may or may not cross tile boundaries depending on the PPS. This makes it possible for the tile to be decoded in parallel
 
-- CTUs in a tile with more neighbours may end up being compressed more efficiently due to this fact
+- CTUs in a tile with more neighbors may end up being compressed more efficiently due to this fact
+
+- In HEVC, slices and tiles may coexist in a coded sequence and withing a coded picture. The restriction is that one or both of the following must be true:
+  1. All CTUs in a slice segment belong to the same tile and/or
+  2. All CTUs in a tile belong to the same slice segment
+
+- It may be beneficial to parallelize the decoding of a coded picture, for example, using multiple processors or processing cores to speed up the time taken to decode a complete picture
+
+- Parallel decoding at the picture level involves allocating certain decoding operations to different processors. Depending on the encoding choices, this may be done in a number of ways when decoding a HEVC sequence
+
+- Recall, that tiles within a coded picture may be decoded in parallel. The following features of HEVC tiles make them suitable for parallel processing:
+  1. Tiles are rectangular and may have a regular size. Having a regular and therefore predictable tile size may be helpful since each tile contains the same number of CTUs and should therefore be decoded using approximately the same amount of processing resources
+  2. Predictions do not cross tile boundaries so decoding one tile does not necessitate waiting for another tile to be decoded
+  3. For each tile in a slice segment or some of the tiles. an encoder may optionally insert an entry point marker in the slice segment header. In this scenario, each marker specifies the offset in bytes to the start of a tile in the coded bitstream. This allows each decoding process to start decoding a tile at the appropriate point without having to wait for the entire picture to be entropy decoded
+
+- Each slice segment in an HEVC bitstream can be decoded somewhat independently, for example, by sending each slice segment to a different processing code for decoding. This may be less straightforward than parallel decoding of tiles, for example for the following reasons:
+  1. Slice segments are not constrained to have a fixed or regular (CTUs per slice segment), so the processing time per slice may be unpredictable
+  2. Dependent slice segments cannot be decoded until the associated independent slice segment is decoded since the dependent slice segments require the header information of the independent slice segment
+  3. Unlike tiles, each slice segment has an associated header, albeit a small one for dependent slice segment so using multiple slice segments purely for the purpose of parallel decoding may be inefficient
+
+- An optional HEVC feature sometimes described as enables parallel decoding of rows of CTUs, signalled by entropy_coding_sync_enabled_flag in the PPS
+
+- If the flag is 1, then each row of CTUs may be decoded in parallel with certain conditions. First, the slice segment header contains an entry_point_offset for some or all of the rows of CTUs in the slice segment. Each offset indicates the offset in bytes to the start of the row of CTUs in the coded bitstream. Note that this is the same entry_point_offset mechanism used for tiles. Second, CABAC entropy coding is constrained so that each successive CTU row can be decoded after two CTUs from the previous row have been decoded. This works by:
+  1. When encoding or decoding each row of CTUs, the entropy coding state or context state is stored after the second CTU in the row
+  2. When encoding or decoding each row of CTUs after the first row, the entropy coding state of the first CTU in the current row is initialized with the entropy coding state of the second CTU in the previous row
+
+- This entropy coding synchronization mechanism enables each row of CTUs to be decoded in parallel. The restriction is that each successive row has to wait for the entropy coding state to be stored for the previous row, so each decoding process can start one two CTUs in the row above have been decoded
+
+- In real time, this produces a ripple or wavefront effect as the parallel decoding processes start for each row
+
+- A decoder needs to know the size of the basic unit of coding i.e. the standard unit of coded picture data that it handles as it processes each frame
+
+- In previous standards, this was a 16 x 16 pixel Macroblock. HEVC introduces the CTU with a size of 16 x 16, 32 x 32 or 64 x 64 set in the SPS and fixed for the duration of the sequence
+
+- The CTU size places a bound on the computational requirements of a decoder. By setting the CTU size to maximum of 64 x 64 pixels, the decoder can be designed with the appropriate amount of memory and processing capacity to handle this amount of data per CTU
+
+- The CTU comprises luma and chroma Coding Tree Blocks. For example, a 64 x 64 pixel CTU corresponds to one CTB of 64 x 64 luma samples and two CTBs of 32 x 32 chroma samples, assuming the sampling format is 4:2:0
+
+- Whilst the CTU size is fixed for an entire HEVC video sequence, the CU can vary from CTU to CTU
+
+- CTUs can be split into CUs of varying size
+
+- The CU corresponds to a square block of pixels and can take any value between the minimum and maximum sizes defined in the SPS. Each CU comprises luma and chroma Coding Blocks (CB)'
+
+- In an HEVC codec, the CTU is split into CUs using quadtree partitioning. A quadtree splits a block such as a square CTU or CU into four quadrants, with the option to continue to recursively split each quadrant
+
+- At each level of the quadtree, a single-bit flag, split_cu_flag can indicate split or no split for each square. This makes a quadtree an efficient way to adapt the size of coding block or CU while minimizing the number of bits required to signal how the block is split
+
+- A further optional partitioning of the CTU is into one or more Quantization Groups (QG). A Quantization Group is a multiple of CU size and effectively makes it possible for an encoder to group together multiple CUs for the purpose of signalling and calculation QP. Within the QG, delta QP i.e. the change from the previously signalled QP is sent at most once and so all the CUs share the same predicted QP
 
 #### Structures In Versatile Video Coding H266
 
