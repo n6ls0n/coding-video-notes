@@ -635,6 +635,46 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - Individual coded pictures or slices refer to one of these RPSs. This means that it is not necessary to send a complete specification of reference pictures for every picture. Instead, the encoder only needs to communicate an index identifying a pre-existing RPS
 
+- In the older H264/AVC standard, random access in supported using instantaneous decoder refresh (IDR) pictures. HEVC extends this concept, introducing random access points and associated leading pictures
+
+- As the name suggests, decoding of an HEVC stream can start at a random access picture (RAP)
+
+- An RAP contains only intra-coded slices, so it is sometimes described as an intra-RAP
+
+- There are three types of RAP: IDR, clean random access (CRA) and broken link access (BLA)
+
+- The difference between these RAP types related to the use of leading pictures. A trailing picture is a picture that is coded only using prediction from previous pictures in display order
+
+- A picture that is predicted from an RAP, which is sent after the RAP in coding order but precedes the RAP in display order, is a leading picture
+
+- There are two types of leading pictures, decodable and skipped, denoted as random access decodable leading (RADL) picture and random access skipped leading (RASL) picture
+
+- RADLs are coded without any prediction from reference pictures prior to the IRAP in coding order whereas RASLs can be coded using prediction from reference pictures that are older than the IRAP
+
+- For RAP types in HEVC, an IDR picture clears the decoded picture buffer. This effectively means that the IDR starts a new video sequence. With an IDR, RADL-leading pictures may be allowed, depending on the NAL unit type, but RASL-leading pictures are not allowed. A CRA picture does not clear the decoded picture buffer, and RADL and/or RASL-leading pictures are allowed. A CRA is changed to a BLA during a splicing operation which causes RASLs to be ignored and skipped during decoding
+
+- For non-RAP types in HEVC, the associated RAP is the most recent RAP in the coding order. A trailing picture is coded and displayed after the associated RAP. A leading picture is, RADL or RASL, is coded after the RAP but displayed before it. RADL or RASL pictures can use the RAP and any pictures that do not refer to pictures coded before the RAP as a prediction source. RASL pictures can use the RAP and pictures coded before the RAP as a prediction source. The use of RASLs can be beneficial to compression efficiency since some pictures can have extra prediction references and therefore more opportunities to create an optimal prediction but can introduce some complexity
+
+- RAPs can facilitate random access and error recovery. As with many features of HEVC, it is up to codec designers how they use RAPs. Random access occurs when a user joins a video stream part-way through
+
+- Decoding and playback can start at any RAP. If it is an IDR picture, decoding starts with the IDR and proceeds as normal.
+
+- If it is a CRA picture, decoding starts with CRA itself. Any leading pictures are coded after the CRA picture but are intended to be displayed before the CRA picture
+
+- RADL pictures may be successfully decoded because they do not depend on any earlier pictures. However RASL pictures depend on earlier reference pictures that mau not exist in the decoded picture buffer, so the decoder will discard the RASL pictures
+
+- Similarly is an error occurs such as one or more lost packets, a decoder may restart decoding at the next RAP. Once again, RASLs will typically be discarded since they may depend on missing or errored older reference pictures
+
+- A RAP will normally be encoded as an IDR or CRA picture. WHen two separate coded sequences are joined together or spliced, say in video editing session, the video editing software may use an IDR or CRA as a suitable starting point to start the second sequence
+
+- If the splice point starts with a CRA picture the editing process may change its designation from CRA to BLA
+
+- Leading pictures may be left as they are to avoid the need to adjust the coded bitstream. Note that changing from a CRA to a BLA picture merely involves replacing the nal_unit_type of each NAL unit associated with the picture. There is no need to partially or fully decode any pictures
+
+- Any RASLs associated with the BLA may not be successfully decodable since they depend on reference pictures prior to the splice point that no longer exists. A decoder encountering a BLA in a coded video sequence should therefore ignore any RASLs associated with the BLA i.e. those coded immediately after the BLA which means that a certain number of the original video frames might not be displayable. RADLs can be successfully decoded
+
+-
+
 #### Structures In Versatile Video Coding H266
 
 ### Intra Prediction
