@@ -816,7 +816,31 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### The Intra Prediction Process
 
+- The process of intra prediction in a video encoder is as follows:
+  1. The encoder selects a prediction mode and creates a prediction block based on previously coded samples such as the samples above and to the left of the current block
+  2. The prediction block is subtracted from the current block to create a block of residual samples
+  3. The residual block is encoded and sent in the compressed bitstream along with the encoded prediction mode
+  4. At the decoder, the residual block is decoded. This happens via the decoder using the prediction mode to create an identical prediction block to the one that the encoder created from the previously decoded samples in the same video frame
+  5. The decoder adds the prediction block to the residual block and reconstructs the decoded current block
+
 #### Intra Prediction Modes
+
+- For an N x N sample block in a video frame, we want to form a prediction from neighboring,  previously coded samples. In general, some or all of the samples adjacent to the current block may be available as prediction sources. These include:
+  - The sample at the top-left corner of the block
+  - N samples immediately above the block
+  - N samples above and to the right of the block
+  - N samples immediately to the left of the block, and
+  - N samples below and to the left of the block
+
+- If these samples have already been coded by the time the encoder processes the current block, then they are available for prediction
+
+- The encoder chooses a prediction for the current block based on a set of intra prediction modes defined in the coding standard and on the available samples above and to the left of the model. There are3 prediction modes:
+
+  1. DC Prediction: This creates a prediction by calculating an average i.e. mean of the samples immediately to the left of the current block. This average value is copied into all samples of the current block. This mode works well when the current area of the frame is relatively flat and there is not much variation in the texture of the current block. If the top samples are not available, for example, if this is a block in the top row of the frame, then the prediction may be created by averaging only the left-hand samples. Similarly, if the left samples are not available, the prediction may be created by averaging only the upper samples. If neither left nor upper samples are available, for example, for the first, top-left block of an intra-coded picture, the prediction may be set to a constant value.
+
+  2. Planar Prediction: This calculates a gradient function based on certain adjacent samples. It is less effective for detailed blocks
+
+  3. Directional Prediction:  This creates an intra prediction by extrapolating or copying samples next to the block. Each type or mode of prediction relates to a specific direction. An encoder may attempt to predict the block with each of the available prediction modes and pick the mode that minimizes the energy in the residual block as long as this mode doesn't take too many bits to signal
 
 #### Prediction Block Sizes
 
