@@ -216,7 +216,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - Quantization reduces the precision of every coefficient in the block, which has the effect of setting small-valued or insignificant coefficients to zero. It is an irreversible or "lossy' process. The information removed during Quantization cannot be restored later
 
-- The behavior of this process can be controlled by a quantization parameter which affects the strength of quantization. A larger QP results in more quantization i.e. greater loss of precision but also results in more compression
+- The behavior of this process can be controlled by a quantization parameter (QP) which affects the strength of quantization. A larger QP results in more quantization i.e. greater loss of precision but also results in more compression
 
 - QP is an important control parameter in a video codec because it has a direct effect on compression and quality
 
@@ -761,7 +761,45 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - A further optional partitioning of the CTU is into one or more Quantization Groups (QG). A Quantization Group is a multiple of CU size and effectively makes it possible for an encoder to group together multiple CUs for the purpose of signalling and calculation QP. Within the QG, delta QP i.e. the change from the previously signalled QP is sent at most once and so all the CUs share the same predicted QP
 
+- In HEVC, every CU is partitioned into one or more prediction units (PUs) and one or more transformation units (TUs). Each PU contains luma and chroma Prediction Blocks (PBs) and each TU contains luma and chroma Transform Blocks (TBs). PU and TU partitioning in HEVC are not required to exactly match each other
+
+- Each HEVC CU is coded using intra or inter prediction. A CU coded in intra-mode can be treated as a single i.e. the PU is the same size as the CU or split into four square PUs because the HEVC intra prediction modes operate on square blocks
+
+- A CU coded in inter-mode can be split into two or four PUs in a number of ways, including square and rectangular PUs
+
+- For both intra and inter prediction, a CU is split once at most into PUs. It is not a recursive process, unlike the partitioning into TUs
+
+- Each PU is predicted using a set of parameters, an intra prediction mode for an intra-PU or an inter prediction mode plus further parameters such as motion vectors, reference picture index or indices, and merge index for an inter-PU
+
+- An HEVC CU is partitioned into one or more TUs using another recursive quadtree structure known as a transform tree. Starting at the CU, at each level of the transform tree except for the lowest possible level, a flag is sent in the bitstream, split-transform_flag
+
+- If the flag is 0, the tree is not divided further, if it is 1, the tree is split into four transform tress each with half the original CU horizontal and vertical dimensions. The process continues until either all flags are 0 or the tree has reached the lowest level and has been split to the lowest allowable level. The TUs themselves are the leaves of the quadtree. Each TU in a colour video sequence comprises a luma TB and two chroma TBs
+
+- The number of levels allowed in the transform tree depends on the maximum and minimum TU size and the maximum transform tree depth, all of which are specified in the SPS. Possible TU sizes in HEVC range from 32 x 32 down to 4 x 4
+
 #### Structures In Versatile Video Coding H266
+
+- While it is not backwards compatible with HEVC, the newer VVC standard builds on many of the concepts of HEVC. Some of the structures in VVC are natural extensions of those found in HEVC, whilst others are actually simplifications of the HEVC approach
+
+- VVC specifies s, SPSs and PPSs in a similar way to HEVC. In addition, the adaptation parameter set (APS) signals picture or slice parameters such as loop filter parameters that may change frequently from one slice or picture to the next, but which would be inefficient to signal with PPSs
+
+- Repeating picture structures such as GOPs are signalled in VVC in a somewhat simpler way to HEVC but still with the capability to signal the reference picture arrangement for a GOP flexibly and efficiently
+
+- Random access and bitstream splicing are supported in a similar way to HEVC with some simplifications. The concept of Gradual Decoding Refresh (GDR) is introduced in VVC in which a decoder can begin decoding at an inter-coded frame rather than an intra-frame, such that a correct decoded picture is gradually built up at the decoder over time
+
+- VVC specifies a picture header that applies to all slices in a coded picture, a concept that existed in older standards such as H263 but was missing from H264 and HEVC. Syntax elements in the picture header do not need to be signalled again at the slice header level
+
+- The slice concept is redefined. Slices in VVC comprise either rectangular slices, which are each a rectangular region that is an integral number of tiles or a rectangular subset of a tile or raster slices each comprising complete tiles in raster order. A new structure, the subpicture, defines a rectangular region of the picture that may contain one or more slices
+
+- The Basic Unit, the CTU, can be up to 128 x 128 samples in size, compared with the maximum 64 x 64 sample CTU in HEVC and the maximum transform size is 64 x 64
+
+- A CTU is partitioned into CUs, first using a quadtree in a similar way to HEVC then one or more binary splits and/or ternary splits
+
+- Each of the leaf nodes of this partitioning process is a CU. CUs can thus be square or rectangular with a minimum size of 4 x 4 samples
+
+- In most cases, the CU block size is also the block size used for prediction and transformation, so there is no separate PU or TU partitioning. VVC transforms can also be square or rectangular, matching the size and shape of each CU
+
+In a CTU in an I-picture, luma and chroma may optionally be partitioned separately. The luma and chrome components of the CTU do not have to use the same partitioning into CUs
 
 ### Intra Prediction
 
