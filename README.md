@@ -844,11 +844,45 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Prediction Block Sizes
 
+- When creating an intra-prediction , an encoder may be capable of choosing between a number of block sizes according to the limits set out in the standard. In general, a larger block size is best for regions of the video scene containing smooth texture or simple, strong details since a large block size will give reasonably accurate intra prediction and will cost the fewest bits to signal to the decoder
+
+- A small block size may be better for regions with complex details. Smaller prediction blocks generally give a more accurate prediction but require more bits to signal the prediction mode of each block in a video frame, since there are more prediction blocks per macroblock or CTU and therefore more prediction modes to be signalled
+
 #### Signalling Intra Prediction Choices
+
+- For every prediction block, the encoder must communicate the choice of prediction mode. This typically involves encoding a parameter in the bitstream and sending it along with each coded block residual
+
+- If the encoder selects a smaller prediction block size in an effort to improve prediction accuracy, the number of prediction modes communicated per frame increases
+
+- Each intra prediction mode and each coded residual occupy space in the bitstream. The encoder should choose an intra prediction for each block that reduces the size of the coded residual. At the same time, the encoder should code the prediction mode using as few bits as possible
+
+- H264 introduced the concept of coding the most probable intra prediction mode. As with many other aspects of video coding, it is a reasonable assumption that the mode of the current block is likely to be the same as or similar to the mode of previously coded blocs in the same area of the frame
+
+- In an H264 codec, the most probable mode is taken to be the same mode as the last block that was coded using intra prediction. The MPM takes the fewest bits to code. If the actual choice of mode for this block is different, then we need to signal the actual prediction mode
 
 #### Choosing a Prediction
 
+- For each block of a video frame, the encoder has to choose a prediction mode. This can be a computationally demanding problem when there are many different modes and multiple block sizes to choose from. If enough computing resources are available, if encoding speed is not an issue and/or if the encoder has plenty of computational power, the encoder do the following:
+
+  ``` cpp
+  For each possible prediction block size {
+        For each prediction mode {
+              Calculate the number of bits to code the residual
+              Calculate the number of bits to code the
+               prediction mode
+    }
+  }
+  ```
+
+- The encoder chooses the combination of block size(s) and modes the produce the minimum number for encoded bits
+
+- Assuming a current N x N sample block. It can be intra-predicted as a single block or as four N/2 x N/2 sample blocks. THe encoder tests every possible prediction mode for the N x N sample block size and notes the minimum number of bits required to code the mode and the residual. The encoder tests every prediction mode for each of the four N/2 x N/2 sample blocks and records the minimum number of bits required to code each mode and residual. THe final choice is the combination of block size and prediction mode(s) that gives the smallest total number of bits.
+
+- Depending on the number of available prediction modes, it may not be possible for the encoder to fully test every possible combination of block size and mode. In practice, a video encoder may simplify the process of choosing a prediction mode by selecting a subset of available modes to test.
+
 #### HEVC Intra Prediction
+
+- 
 
 #### VVC Intra Prediction
 
