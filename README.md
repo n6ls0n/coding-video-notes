@@ -882,9 +882,54 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### HEVC Intra Prediction
 
-- 
+- H265/HEVC  intra prediction creates a prediction for the current prediction block (PB) from neighboring samples to the left and above the current PB
+
+- An intra prediction block is square block of luma or chroma samples that can range in size from the CTU size, a maximum of 64 x 64 samples down to 4 x 4 samples
+
+- Recall, the CTU is partitioned into coding units (CUs) that are made up of coding blocks (CBs). Each CB in an intra-coded CB is partitioned in PBs according to the following rules:
+  1. If the CB is larger than the smallest allowable CB size, the PB is same size as the CB
+  2. If the CB is smallest allowable size CB size, which is defined in the sequence parameter set as 8x8 or larger, the PB may be either the same size as the CB or split into four quadrants of 4 x 4 samples or larger. The choice of whether to split the CB is signalled with a flag in the bitstream
+
+- HEVC supports 35 intra prediction modes. Mode 0 is planar prediction, mode 1 is DC prediction and modes 2 - 34 are directional or angular prediction modes
+
+- Planar prediction, mode 0, fits a plane surface to the block. The surface is created by interpolating between four pixels, two above and two to the left of the current block
+
+- DC prediction, mode 1, calculates an average of the above and left pixels and applies this average value across the entire block
+
+- HEVC's 33 directional or angular prediction modes can be applied to intra-predicted PUs up to 32 x 32 in size. Each mode creates a prediction by extrapolating across the block of neighboring samples above and/or to the left
+
+- The modes are chosen in such as way as to reflect that video content usually has more vertical and horizontal features than diagonal features
+
+- When predicting a particular sample using an angular prediction mode, the prediction source may lie exactly on boundary sample position in which case that sample is used as the prediction source. However in many cases, the prediction source lies between boundary samples
+
+- For larger prediction block sizes, 8 x 8 or larger, boundary samples are smoothed using a three-tap linear filter for certain prediction modes. The intra prediction is constructed by extrapolating from the smoothed boundary samples
+
+- At slice or tile boundaries, some of the neighboring samples may not be available. The encoder may copy available neighboring samples into unavailable positions, making it possible to use a wider number of possible prediction modes in these situations
+
+- The boundaries of predicted sample blocks are filtered to smooth discontinuities across block boundaries in certain situations, when the block is 16 x 16 or smaller and when certain prediction modes are selected
+
+- HEVC codes the intra prediction mode of each PB based on the observation that neighbouring blocks tend to have the same or similar intra prediction modes. The encoder signals the decoder to use either a MPM from a list of three likely candidates or to use a specific mode that is not on the candidate list
+
+- In luma prediction mode signalling, a list of three candidate prediction modes, the MPM list, is constructed depending on the intra prediction modes of neighboring previously coded blocks to the left and above. Any unavailable neighbors e.g. blocks that were coded using inter prediction rather than intra prediction, are set to DC mode. If both neighbors have the same directional prediction mode, then the MPM candidates are set to that mode, plus or minus one.
+
+- In chroma prediction mode signalling, for each chroma PB, the encoder signals that the chroma PB should either use one of the planar, DC, horizontal or vertical modes or use the same intra prediction mode as the corresponding luma PB.
+
+- The chroma components of a CU have a limited number of choices of intra prediction mode. Both components can inherit the luma prediction mode, or they can both be coded using modes 0 (planar), 1, (DC), 10 (horizontal), 26 (vertical) or in certain cases 34 (diagonal‐down)
 
 #### VVC Intra Prediction
+
+- Intra prediction in the VVC standard extends many of the concepts of HEVC intra prediction, providing more intra prediction options at the cost of increased computation. Enhancements include the following:
+  1. Intra Prediction Modes: VVC adds 32 further directional modes to HEVC's 33, giving a total of 65 directional modes. A square block is predicted by extrapolating neighboring samples according to one of the prediction direction. Some of the angular modes are modified for the prediction of non-square blocks. Along with DC and planar modes, this gives a total of 67 possible intra prediction modes for each CU
+
+  2. Intra Prediction of Rectangular Blocks: VVC coding units can be square or rectangular with aspect ratios of 1:1, 1:2, 1:4 or greater. HEVC only supports the intra prediction of square blocks, whereas any of the rectangular VVC coding units can be intra-predicted. When predicting a rectangular block using directional prediction, the default set of prediction directions may not be ideal. Instead, the directions are remapped. This allows the remapped modes to more provide effective coverage of all the directional angles that are likely to appear ina block of with these dimensions
+
+  3. Intra Interpolation Filters: The interpolation filter used in HEVC intra prediction is extended to four taps from two and applied depending on the directional prediction mode
+
+  4. Cross-Component Prediction: VVC supports 8 prediction modes for chroma blocks, including 3 modes based on chroma prediction from luma. Luma and chroma components of a block often have structural similarities. VVC introduces cross-component modes for chroma prediction. For these modes, after predicting the luma block, the reconstructed luma block is down-sampled and used to predict the chroma components. The prediction is formed based on the correspondence between edge pixels in the chroma and luma components. A prediction model is generated based on the similarity or difference between the edge samples of the luma and chroma blocks. Based on this model, the reconstructed luma block is used to create an intra prediction for the chroma block
+
+  5. Extra Reference Lines: Intra prediction in HEVC and the earlier H264/AVC standards used reconstructed samples from the lines of samples adjacent to the current block. VVC supports the use of two further reference lines: Line 1, which is one sample removed from the current block and Line 3, which is three samples removed from the current block. The encoder can signal the selected reference line and the block is predicted using directional modes only from reconstructed samples in the selected line
+
+  6. In VVC, intra-predicted luma blocks may be divided into two or four horizontal or vertical sub-blocks prior to carrying out intra prediction. Smaller blocks are divided into two partitions, and larger blocks are divided into four partitions. This process has the effect of breaking up intra prediction processed for larger blocks and increasing the opportunities for parallelization
 
 ### Inter Prediction
 
