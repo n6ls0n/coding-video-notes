@@ -803,6 +803,17 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 ### Intra Prediction
 
+- Intra prediction is the process of creating a prediction block based on pixels in the same frame as the current block
+
+- Raster Order means left to right and top to bottom
+
+- Intra prediction involves predicting a current block from nearby previously coded pixels in other blocks such as pixels above and/or to the left of the current block. Some or all of these pixels may be available in previously coded blocks
+
+- There are three types of intra-prediction types:
+  1. Flat or DC: All samples have the same prediction value, for example, the average value of adjacent pixels. The prediction block is a flat region with all the samples the same
+  2. Planar: Samples are predicted by fitting a plane function to adjacent pixels. The prediction block is a gradient, with a smooth progression in value depending on the plane function
+  3. Directional or Angular: Samples are predicted by extrapolating adjacent pixels in a particular direction; in this example, extrapolating diagonally down and to the right
+
 #### The Intra Prediction Process
 
 #### Intra Prediction Modes
