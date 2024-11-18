@@ -1067,6 +1067,20 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Motion Vectors
 
+- Inter prediction attempts to generate a prediction block or region that is similar to a current block or region. A motion vecotr is an offset from the position of the current block to the position of the prediction block
+
+- A motion vector may or may not correspond to the actual motion of the pixels from one video frame to another
+
+- Eahc motion vector points to the location of the prediction region relative to the current block position. A motion vector has an x-component which indicates the horizontal shift, and a y component, which indicates the vertical shift
+
+- The encoder selects the motion vector that gives the best match to the current block. The best match is the prediction block that minimizes a particular measure of difference e.g. MSE between the current block and the prediction block
+
+- The smaller the difference between the pairs of pixels in the prediction block and the current block, the smaller the calculated value of the error will be
+
+- Inter prediction motion vectors tend to have certain predictable properties, such as:
+  - Motion vector magnitudes tend to be clustered around 0 if the camera position is fixed or around a fixed value if the camera is moving
+  - Motion vectors in a local area of the image tend to be correlated so the current block motion vector is likely to be similar to neighbouring block motion vectors
+
 #### Sub Pixel Interpolation
 
 #### Reference Pictures
