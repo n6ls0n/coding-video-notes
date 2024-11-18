@@ -78,7 +78,7 @@ Notes for <https://read.wiley.com/books/9781118711750/page/0/section/top-of-page
 
 - One second of original, uncompressed SD video, captured at 25 frames per second, takes up around 15.5 MBs of storage space. This means that the video clip would require 124 Mbits/second of bandwidth to transmit over a network or broadcast channel in real time, i.e. one second of playable video sent every second
 
-- One seocn dof uncompressed UHD video captured at 50 frames per second, take sup around 620 Mbs of storage space and would require a substantial 5Gbit/seond of transmission bandwidth to send in real time
+- One second of uncompressed UHD video captured at 50 frames per second, take sup around 620 Mbs of storage space and would require a substantial 5Gbit/seond of transmission bandwidth to send in real time
 
 - A video codec is used to encode/decode video for storage and transmission
 
@@ -939,7 +939,19 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 - Inter prediction creates a prediction block based on previously coded pixels in a different video frame. This could be the frame just before the current frame i.e. one frame in the pad t, the frame just after - one frame in the future, or an older previous frame or newer future frame
 
-- 
+- These are the options we can use to predict a block in the current frame:
+  1. We can use the most recent frame as our prediction source
+  2. We cna use an older frame as our prediction source
+  3. We can use a future frame as our prediction source
+  4. We can make a prediction by combining data from two or more frames, for example one from the past and one from the future
+
+- The encoder deocdes or reconstructs each coded frame and creates inter predictions from these previously coded reference pictures. The encoder sends the residual, which is the difference between the prediction and the actual frame data, together with instructions so that the decoder can create an identical prediction
+
+- The decoder stores deocded frames and uses theses as reference pictures. It uses the instructions send by the encoder to create thr same prediction as the encoder
+
+- This means that the video encoder and video decoder maintain the same set of reference pictures and create identical predictions
+
+- The frame or frames chosen as the source fo the prediction must be available at the decoder. This means that it is usally necessary to compress and send the prediction source frame(s) before the sending the current frame. This in turn measn that if the encoder uses the future frames as prediction sources, it must reorder the frames in the bitstream so that the decoder recieves these future frames before the current frame
 
 #### Inter Prediction The Basics
 
