@@ -933,6 +933,14 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 ### Inter Prediction
 
+- Inter prediction is the process of creating a prediciton block based on pixels a different frame from the current video frame.
+
+- Recall that for each block of pixels in the current video frame, it is often possible to find a similar block of pixels in a different video frame
+
+- Inter prediction creates a prediction block based on previously coded pixels in a different video frame. This could be the frame just before the current frame i.e. one frame in the pad t, the frame just after - one frame in the future, or an older previous frame or newer future frame
+
+- 
+
 #### Inter Prediction The Basics
 
 #### Forward Backward and BiPrediction
