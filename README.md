@@ -987,11 +987,53 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 - For the second reason that motion vectors do not necessarily correspond to motion. Understand that when the encoder chooses a motion vector for a block, it is choosing the offset of the best prediction i.e. the prediction that minimizes the number of coded bits for the block, including the coded residual and the coded motion vector. Sometimes this offset corresponds to motion and sometimes it does not. In cases where the section of the image captured withing the block changes from frame to frame, it is difficult to find a match in the previous frame. THe encoder searches fro the best match and finds a match in a seeminly random position. This is not a mistake or a failure - if the offset or motion vector identifies the prediction that minimizes the number of coded bits, then the encoder has done its job successfully, whether or not the motion vector actually corresponds to motion
 
-
 #### Forward Backward and BiPrediction
+
+- In theory, a video codec can use any data as a prediction source, as long as it has already been coded by the time the encoder makes the prediction. If the data has already been coded
+
+- If the data has already been coded, then it has already been sent to the decoder and so the decoder can create the same prediction
+
+- Possible sources for creating an inter prediction include:
+  - The previous frame
+  - Older past frames
+  - Future frames
+  - Combinations of previously coded frames, past and/or future
+
+- Recall that a picture or slice, which itself corresponds to part or all of a picture can be coded as an I, P or B picture or slice using one of the popular video coding standards
+
+- In an I picture or slice all the coding units (CUs) or Macroblocks are coded using intra prediction i.e. there is not option to use inter prediction
+
+- In a P picture or slice, CUs or MBs may be coded using inter prediction with one reference picture or using intra prediction
+
+- In a B picture or slice, CUs or MBs may be coded using inter prediction with two reference pictures which is known as biprediction. They may alternatively be coded using inter prediction using one reference picture or intra prediction
+
+- This means that when encoding a P or B slice, an encoder can choose a mix of prediction types depending on what is best for the current MB or CU. For example, in a B slice, one CU may be efficiently predicted using two prediction sources i.e. biprediction. The next CU may be difficult to predict from previously coded frames and the best predition choice might be to use intra prediction. Thus the difference between and I , B and P slices is in the choices of prediction types that are available
+
+- Instead of predicting from the immediately preceeding frame N - 1, the encoder can choose to predict a block from an older frame, e.g. N-2, N-3
+
+- Predicting from an older frame i.e. a frame that should be displayed before the current video frame is known as forward prediction
+
+- For many blocks, the best prediction may well be found in the previous N-1 frame
+
+- However, in some cases a better prediction might be available in an older frame. For exmaple if there is periodic movement in the scene, we might find a matching block in an older frame rather than in the previous frame
+
+- Alternatively, if the changes from frame to frame are complex and somewhat random, we might simply find a prediction that reduces the residual by looking at an older frame. The frame we choose to predict from is known as a reference frame or reference picture
+
+- The above discussion implies that the more reference frame we consider, the better. However, there are downsides to considering many previous frames as possible reference frames for each block of pixels
+
+- First the encoder has to signal the choice of the prediction frame, which may take more bits than simply assuming prediction from the previous frame. Second, both the encoder and decoder have to store all of the frames that might be used for prediction, which may require more memory to store all of the pixels of the previously coded frames. Third, searching for a prediction match, known as motion estimation is computationally intensive and there is often a diminishing return i.e. point at which it is not worth the computational effort to search a much older reference frame
+
+- Another option is to create an inter prediction from a future frame i.e. a frame that will be displayed after the current frame
+
+- An encoder can predict a block in the current frame N from a region in frame N+1, N+ 2 etc
+
+- This may seems counter intuitive since these frames should be displayed in the future. However, backwards prediction is feasoble if the encoder and deocder can change ther cording order of video frames so that any future frames used for prediction are sent before the current video frame
+
+- Backwards prediction can be useful when areas of a video frame are uncovered
 
 #### Inter Prediction Block Sizes
 
+- 
 #### Motion Vectors
 
 #### Sub Pixel Interpolation
