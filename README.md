@@ -1031,9 +1031,40 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 - Backwards prediction can be useful when areas of a video frame are uncovered
 
+- An inter prediction can also be created by combining pixels in two reference frames
+
+- A biprediction block is formed by averaging each pair of pixels from two source blocks. This biprediction block is then subtracted from the original block to create a prediction residual
+
+- Biprediction can often give a better prediction than uni-directional prediction whihc predicts from a single reference frame. However the encoder needs to send offsets to two prediction source blocks, so biprediction may require more bits to signal the choice of predicition source
+
+- Biprediction has been a feature in video coding since the publication of MPEG1 and MPEG2 video coding standards in the early 1990s. In these early standards, the encoder was restricted to creating a biprediction using a specific past frame and a specific future frame
+
+- Recent standards like H264 and HEVC give the encoder more flexibility so that a bipredicted block can be created from one past and one future frame or from two past frames or from two future frames.
+
+- In theory, more prediction options are possible such as creating a prediction by combining data from three or more frames. Again, biprediction has implications for the way in which reference picture are handled
+
 #### Inter Prediction Block Sizes
 
-- 
+- How should the encoder choose the size of the inter prediction block?
+
+- Recall that a video encoder partitions each frame into basic units of coding known as macroblocks or Coding Tree Units.
+
+- These are square blocks, typically a power of 2 to each side e.g. 16x16 pixel macroblocks or CTUs of size 16x16, 32x32 or 64x64
+
+- A prediction block is a subset of a macroblock or CTU
+
+- We could predict the entire macroblock or CTU as one prediction block by choosing a prediction block size equal to macroblock or CTU size. Alternatively, we could choose a smaller block size, such as a square or rectangular block that is msaller than the macroblock or CTU
+
+- Just like in intra-prediction, the best option for inter prediction block size may be tow switch two or more block sizes using larger block for areas of the background wiht less movement and smaller blocks for complex moving regions
+
+- The encoder communicates extra information for every prediction block. As well as signalling the choice of prediction block size and perhaps further prediction mode information, the encoder must also communicate a motion vector for each inter prediction block
+
+- There are a number of ways that the encoder can reduce the amount of extra overhead information, such as by inferring or by predicting some or all of the overhead
+
+- In general, however, smaller prediction block sizes mean more prediction blocks per frame and more information sent to describe the mode and motion vector of each prediction block
+
+- Square prediction blocks are computationally simple to process and require little overhead to signal especially if their dimensions are powers of 2
+
 #### Motion Vectors
 
 #### Sub Pixel Interpolation
