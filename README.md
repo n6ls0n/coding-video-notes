@@ -955,6 +955,39 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Inter Prediction The Basics
 
+- Assuming we are predicitng from the previous frame in the video sequence, for every blokc in the current frame (N), the encoder creates a prediction from the previous frame (N-1)
+
+- We can create the prediction from the same postion in the previous frame or from a different position which is offset from the original block position
+
+- For a particular block in the current frame, the block of pixels in the same position in the previous frame is often similar
+
+- However, if objects have moved between frame or if the camera itself is moving, we might find a closer match for the block of picels in a different position in the previous frame
+
+- If we consider the block in the same position to be at location (0,0) then we can specify an offset to different block positions
+
+- This offset is known as a motion vector
+
+- An encoder carries out the following steps when inter-prediciting a square block A in a current frame with reference to a previously coded frame
+  1. Encoder selects an offset to a square region B in a previously coded frame. This region in the previously coded frame is the same size as A and is the prediction source
+  2. Encoder subtracts each pixel of the prediction source from each pixel of the current block. THe difference is the residual block C
+  3. Encoder codes and transmits the residual blokc and the offset motion vector\
+
+- A decoder reconstructs a decoded block using inter predictio with the following steps:
+  1. Decoder recieves and decodes the residual block C and the offset
+  2. Decoder creates the prediction source B by identifying the same sqaure region in the previously coded frame using an offset recieved from the encoder
+  3. Decoder adds each pixel of the residual blokc to each pixel of the prediction source. The result is the decoded block A. This may or may not be identical to the original block A, depending on whether information is discarded during encoding
+
+- The offset from the current block position to the position of a prediction region in a previously coded frame is known as a motion vector
+
+- The process of predicting a blokc using inter prediction can be described as motion-compensated prediction
+
+- The term motion vector can be confusing for at least two reasons. Firstly, when a motion vector points to a prediction block in previous frame, it points to where object have moved from. Secondly, motion vectors point to the best match, which may or may not correspond to actual object motion
+
+- Looking more into the first reason that motion vectors may not point in the direction of motion. If the prediction source is in a previous frame and if objects are moving from frame to frame, then the offset points to where pixels are moving from not where they are moving to
+
+- For the second reason that motion vectors do not necessarily correspond to motion. Understand that when the encoder chooses a motion vector for a block, it is choosing the offset of the best prediction i.e. the prediction that minimizes the number of coded bits for the block, including the coded residual and the coded motion vector. Sometimes this offset corresponds to motion and sometimes it does not. In cases where the section of the image captured withing the block changes from frame to frame, it is difficult to find a match in the previous frame. THe encoder searches fro the best match and finds a match in a seeminly random position. This is not a mistake or a failure - if the offset or motion vector identifies the prediction that minimizes the number of coded bits, then the encoder has done its job successfully, whether or not the motion vector actually corresponds to motion
+
+
 #### Forward Backward and BiPrediction
 
 #### Inter Prediction Block Sizes
