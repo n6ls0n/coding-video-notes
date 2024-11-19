@@ -1139,6 +1139,28 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Signalling Inter Prediction Choices
 
+- Assuming we have a rectangular block in a current picture that is bipredicted from a past and a future reference picture. In order to decode this blokc, the decoder needs to know the following prediction parameters:
+  1. Motion Vector 0: The motion vector (offset) pointing to the first reference block
+  2. Motion Vector 1: The motion vector pointing to the second reference block
+  3. Reference Index 0: An identifier for the reference picture containing the first reference block
+  4. Reference Index 1: An identifier for the reference picture containing the second reference block
+
+- If the current block is predicted from a single reference picture, using P-prediction, the the decoder only needs MV0 and RI0. If it is bipredicted, then it needs all four items listed above
+
+- It is important to communicate these parameters to the decoder as efficiently as possible using the smallest possible number of bits. The prediction parameters for each block can be communicated with the parameters split into base parameters and delta parameters
+
+- The base parameters, suich as motion vector predictor, are either inferred or selected:
+  1. Inferred: Base parameters are automatically generated at the decoder, based on previously decoded block parameters. No information is sent in the bitstream
+  2. Selected: Base parameters are selected at the decoder froma set or list of parameters generatred from previously decoded blocks. A selection index. identifying the chosen base parameters, is sent in the bitstream
+
+- The delta parameters are either sent or not sent:
+  1. Sent: A delta value  i.e. the difference between the base parameters and the actual prediction parameters is encoded and sent in the bitstream. The decoder can add this delta value to the base parameters to create the block prediction parameters
+  2. Not sent: No delta value is sent, so the current block prediction parametersare set to be identical to the base parameters
+
+- A decoder can infer the base motion vector automatically based on previously coded information, select it from a list of candidates or generate it by scaling previously coded information
+
+- In H.264, HEVC and VP9, each inter prediction block has one or two motion vectors. Unless the block's inter prediction parameters are inherited, as in HEVC's merge mode, the encoder sends an index signalling the choice of reference picture for each motion vector. In the HEVC case, this is an index into a list of candidate reference pictures, List 0 or List 1
+
 #### Skip Mode
 
 #### Loop Filter
