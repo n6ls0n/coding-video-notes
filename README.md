@@ -1083,7 +1083,30 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Sub Pixel Interpolation
 
+- So far motion compensation has been discussed which is inter prediction using motion vectors where each motion vector points to a position in a reference frame that is offset by a number of pixels
+
+- Most times motion vectors cannot be represented with integers thus it would be easier to create a better prediction if we can make it possible to send a non-integer motion vector
+
+- We can do this by resampling the reference frame to a higher resolution, for example, by resampling at half-pixel positions and choosing a motion vector that points to pixels in the re-sampled reference frame
+
+- Interpolated sub-pixel positions are created by combining neighbouring pixel values, typically using filtering. The way in which neighbouring values are combined or filtered has an effect on the quality of the interpolation. Examples of filters include bilinear and bicubic interpolation
+
+- There are two main ways to increase the performance or accuract of sub-pixel motion-compensated prediction
+  1. We can use a higher-order interpolation filter. A higher order interpolation filter such as the bicubic interpolation filter can produce a more accurately interpolated reference frame and hopefully a better inter prediction. This comes at a cost of increased computational complexity at both the encoder and decoder since both of them must create the same interpolated reference for prediction
+
+  2. We can increase the sampling density. There is usally no apparent difference between the images produces by the higher density interpolations apart form the larger number of interpolated pixel positions since interpolation doesn't add any new information. However, hgiher-density interpolation makes it possible for motion vectors to point to a greater number of positions between integer pixels. As we increase the resolution of the interpolated frame, our chosen motion vectors can more closely approximate actual interframe motion which of course will take arbitray values
+
+- There are two potential disadvantages of increase interpolation density. First, increased interpolation density requires more computational processing. Both encoder and decoder must generate and store the necessart sub-pixel values, which requires computation and memory. Increasing interpolation density by a factor of two, from quarter to to eight-pixel interpolation, requires four times as many interpolated points to be calculated and stored
+
+- Second, higher precision motion vectors typically require mote bits to encode and transmit
+
+- Regardless of the method of encoding and sending vectors, a motion vector in the range (0,1) will require more bits to encode as the interpolation resolution increases
+
+- At a certain point, the cost of extra bits required to send motion vectors outweighs the benefit of greater motion-compensated prediction accuracy. It turns out that this point depends in part on the design of the interpolation filters. With more sophisticated intepolation filters, a higher interpolation depth can provide an overall compression gain
+
 #### Reference Pictures
+
+- 
 
 #### Signalling Inter Prediction Choices
 
