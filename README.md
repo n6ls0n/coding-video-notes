@@ -1173,6 +1173,18 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Loop Filter
 
+- The encoder and decoder must use the same prediction source in order to create an identical prediction. This means that both encoder and deocder must form a prediction from decoded rather than original video information
+
+- Video coding is typically a lossy process, which means that the decoded frame is not identical to the original video frame
+
+- The coding process introduces distortion such as blocking and ringing effects
+
+- If the reference frame contains obvious blocking and ringing distortion, the best availbale motion-compensated prediction for the current block is distorted. This means that the residual after prediction will contain siginificant energy, even if the motion-compensated prediction is as accurate as possible
+
+- One solution to this problem is to filter the reference frame to reduce distortion before forming the prediction. If the filtering is successful, the filtered reference frame contains less distortion and it is therefore easier to find an accurate match for the current block
+
+- Both encoder and decoder must carry identical filtering operations. This means that the filter process forms part of the encoding loop and so this type of filtering is often described as a loop filter
+
 #### When Inter Prediction Does Not Find a Good Match
 
 #### HEVC Inter Prediction
