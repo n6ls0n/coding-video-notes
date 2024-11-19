@@ -1163,6 +1163,14 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Skip Mode
 
+- Skip mode, one of the most common modes in may practical coding scenarios, is a mode where no residual information and no prediction information is sent
+
+- If the inter prediction process results in an accurate prediction, the residual block will contain very little information
+
+- After transform and quantization, the blokcs may contain all-zero data. If the prediction parameters are inferred rather than sent e.g. using HEVC's merge mode, and the quantized residual block are all-zero, then no prediction or residual data needs to be sent
+
+- The decoder simply infers a prediction mode by merging from a neighbouring block, generates a prediction block and this becomes the decoded block data
+
 #### Loop Filter
 
 #### When Inter Prediction Does Not Find a Good Match
