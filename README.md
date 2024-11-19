@@ -1106,7 +1106,36 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Reference Pictures
 
-- 
+- Recall that a block in the current video frame is inter-predicted from a region, typically of the same size, in a previously coded frame known as a reference frame or reference picture
+
+- Both the encoder and deocder need to be able to construct the same prediction for every block which measn that both need to have the same set of reference frames available
+
+- As the encoder processes each block of the current frame, it encodes the block into the coded video bitstream and also deocdes the block to create a reconstructed block which it uses to build up a reference frame
+
+- This mimics the bhaviour of the decoder which also decodes each block to build up a current decoded frame for output and optionally, for use as a reference frame
+
+- In this way, both the encoder and decoder construct identical sets of reference frames
+
+- Low delay configuration is a case where the decoder can always decode and display each picture as soon as it has been recieved
+
+- High delay configuration is a scenario where the decoder has to wait a few frames before displaying decoded frames. This type of configuration can give better compression performance at the expense of an increase in decoding delay
+
+- Coded and reference pictures can be organized in a number of ways, depending on the requirements of the application. These applications include:
+  1. To minimize end-to-end delay: In an application such as video calling or video conferencing, it is important that the delay between capturing a frame at the source and displaying it as the destination is as low as possible. A short delay gives a more natural conversational experience
+  2. To maximize compression efficiency:For example, biprediction with forward and backward reference frames tends to be more efficient than forward-only prediction, which in turn is more efficient than intra-only prediction. A highly efficient sequence may consist mostly of B-pictures with as few I and P pictures as possible
+  3. To provide random access capability: In many applications, it is important that a viewer can start decoding part-way through a sequence with a relatively short delay. This typically requires the use of intra-coded pictures at regular intervals. When a user joins a sequence part-way through, the decoder finds the nearest I-picture and starts decoding from there
+  4. To provide scalabily, i.e. the ability to extract a lower-fildelity version of the video clip: For example, pictures that are not used as prediction references themselves can be discarded without affecting the remaining coded pictures
+  5. To reduce or limit the storage requirements of the decoder
+
+- Some of these aims may be mutually exclusive. For example, high compression efficiency might be achieved at the expense of signinficant delay and memory requirements at the decoder and vice versa
+
+- In low-delay picture strcutures, the sequence starts with an I-picture, since there are no previosuly coded pictures to predict from. Further I-pictures may be inserted at intervals to enable a decoder to start deocding at a later point and/or re-synchronize if there is a transmission error. If the encoder and deocder are communicating in both directions, for example in a video calling application, then it may not be necessary to insert further I-pictures unless the decoder signals that there has been a transmission problem. eahc of the remaining pictures is coded using P or B prediction i.e. each block is inter-predicted from one or two reference pictures. All blocks are predicted from past pictures - pictures that are older in display order. This means that the decoder can display each frame as soon as it decoded, which minimizes the delay at the decoder. Hence, the contribution of the video codec to end-to-end delay need not be more than a one-frame delay
+
+- In a random-access picture structure, a better compression efficiency can be achieved compared to a low-delay structure assuming an equal number of I pictures at the expense of an increase in decoding delay. The sequence starts with an I picture. For random access capability, it is necessary to insert I pictures typically at regular intervals. The repeating structure of reference pictures is sometimes described as a Group of Pictures. If I-pictures occur once every second, say, then a decoder attempting to start decoding at an arbitrary point has to wait at most one second before it recieves and deocdes a fresh intra-coded picture
+
+- In a hierarchical picture structure, pictures at each layer are predicted using only lower-layer pictures as references. This has two potential benefits:
+  1. It is easy to strip out higher layers to create a lower frame rate video clip, for example to reduce the bitrate of the coded video sequence
+  2. A hierarchical GOP structure may have better compression efficiency than a non-hierarchical structure
 
 #### Signalling Inter Prediction Choices
 
