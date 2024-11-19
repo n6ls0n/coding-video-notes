@@ -1200,6 +1200,21 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### HEVC Inter Prediction
 
+- HEVC achieves efficient inter prediction through a combination of techniques, including:
+  - The ability to adapt the PU size from 64 x 64 down to 4 x 4 samples, with varying rectangular block shapes
+
+  - Flexible choices of prediction type, direction and reference
+
+  - Interpolation to sub-pixel positions for accurate motion compensation
+
+  - The ability to merge a number of PUs, sharing one set of prediction parameters across multiple PUs, which makes it possible to efficiently predict motion for irregular-shaped moving regions
+
+  - Adaptive deblocking and smoothing filters to reduce artifacts in the reconstructed picture with the aim of improving further prediction
+
+  - The ability to select between intra- and inter prediciton at a range of block sizes, depending on the video content
+
+  - Candidate list for predicting or copying motion vecotrs from previous blocks, known as merge or AMVP mode
+
 #### Inter Prediction in VVC
 
 ### Transform and Quantization
