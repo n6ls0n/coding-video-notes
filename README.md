@@ -1219,6 +1219,34 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 ### Transform and Quantization
 
+- Recall that we have seen how a video encoder processes a video frame, predicting each block using intra prediction or motion compensated inter prediction.
+
+- The encoder subtracts the prediction from the original blokc to leave a residual block
+
+- The next stage is to process the residual blokc using a block transform and quantization
+
+- After these two processes, the block can be encoded into a compressed bitstream. When the bitstream is decoded, eahc blokc is rescaled and inverse-transformed to create a decoded residual. When the bitstream in decoded, each block is rescaled and inverse-transformed to create a decoded residual
+
+- A block transform has the effect of concentrating the important visual information in a block into a small number of significant values known as transform coefficients
+
+- Quantization is used to remove less siginificant values leaving a small number fo visually significant coefficients to represent the block
+
+- Assuming we have an 8x8 residual block on the left, the pixel information is distributed across the block. After transformation, the coefficient block concentrates most of the information into a few significant coefficients. After quantization, most of the quantized coefficients are set to zero. The quantized coefficient block can typically be coded into a much smaller number of bits than the residual block
+
+- The amount of quantization i.e. the amount of information that is removed can be adjusted to control the trade-off between compression and quality. More quantizatrion gives more compression but reduces image quaility when the blokc is decoded, whereas less quantization gives less compression but increases image quality
+
+- The transform stage converts pixels or smaples into a different representation that is suitable for compression
+
+- Many video codecs use block transforms. A block transform takes a block or pixel or residual sample and converts it into a block of coefficients
+
+- Assuming a block of pixel values on the left each stored as a number that indicates the brightness or luma of the pixel. A transform converts the pixels into a block of coefficients, each of which is a number that indicates the proportion or weight of a frequenct component. Note that in the coefficient block, the coefficients at the top left tend to have much higher magnitudes compared to the coefficients of the lower right. This is one of the useful properties of certain block transforms since it is easier to efficiently encode high-magnitude coefficients when they are goruped together
+
+- A block transform may be reversible which means that applying a forward transform followed by an inverse transform will recreate the original data. By itself, a block transform does not compress the data
+
+- Quantization reduces the information contained in the block of coefficients and makes it easier to compress
+
+- However, it is a non-reversible or lossy process, which measn that the information removed cannot be restored
+
 #### Residual Blocks
 
 #### Block Transforms
