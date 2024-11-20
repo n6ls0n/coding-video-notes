@@ -1249,7 +1249,13 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Residual Blocks
 
+- In a video encoder, the output of the prediction process is a residual frame or picture. Each block in the residual picture has been predicted from neighbouring samples in the same frame or from previously coded frames. The better the prediction, the less information remains in the residual picture and so a typical residual picture consists of blocks of small positive and negative samples and lots of zeros
+
+- Residual blocks tend to have characterstics that are challenging for compression. First, the information tends to be spread across the block, rather than concentrated in one place. Second, all of the samples are of roughly equal significance, as they all play an important part in reconstructing the final image block
+
 #### Block Transforms
+
+- 
 
 #### Quantization
 
