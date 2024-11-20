@@ -1319,9 +1319,24 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Transform and Quantization in Practice
 
-#### HEVC Transform and Quantization
+- The transform and quantization stages in a video codec are closely connected. The transform does not provide compression by itself but it designed to work the with the subsequent quantization stage, which quantizes each transform coefficient
 
-#### Transform and Quantize in H266 Versatile Video Coding
+- In a practical codec, the transform and quantizer should be designed with certain goals in mind, including:
+  - Maximizing rate-distortion performance - maximum quality and minimum compressed bitrate
+  - Minimizing computational complexity
+  - Ensuring compatibility between encoders and decoders
+  - Providing flexibility, for example, in the selection of transform size and quantizer step size
+
+- In recently developed video coding standards, these goals are satisfied by approaches such as the following:
+  - Specify a transform that can be implemented using a minimal number of basic arithmetic operations such as additions, subtractions and binary shifts, with as few mulitplications as possible since these tend to be more computationally expensive than addditions and shifts
+  - Specifiy a transform that can be efficiently implemented in different ways to maximize efficiency on different software and hardware platforms
+  - Specify a particular approximation to transform weighting factors such as irrational number in the 4 x 4 DCT
+  - Avoid divisions and fractional arithmetic if possible
+  - Limit the number of bits of precision required during computation. For example, if the input samples are 8 bits, what is the maximum dynamic range required during the computation of the transform and quantization stages?
+  - Share aspects of the design across multiple transform sizes where possible
+  - Specify the quantizer to give an effective level of control of the the trade-off between quantizer steps size, bitrate and quality
+
+#### HEVC Transform and Quantization
 
 ### Entropy Coding
 
