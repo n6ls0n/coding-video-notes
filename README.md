@@ -1305,6 +1305,18 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Quantization
 
+- Once a block of samples has been transformed into a block of transform coefficients, the coefficients can be quantized
+
+- Quantization reduces the precision of each coefficient, which means that large-valued coefficients lose precision and smalled-valued coefficients are set to zero
+
+- Quantization exploits properties of typical images and of the way we see images
+
+- Adjusting the quantization proces is an effective way of controlliing both compression and image quality
+
+- The gap between possible coefficient values is known as the quantizer step size
+
+- Increasing the step size has two effects. First less information is retained in the quantized values, maing them easier to compress. Second, the rescaled values are increasingly different from the original coefficients, which means that distortion is increased and the decoded image quality will be worse
+
 #### Transform and Quantization in Practice
 
 #### HEVC Transform and Quantization
