@@ -1255,7 +1255,53 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Block Transforms
 
-- 
+- A block transform converts residual blocks into transform coefficients blocks that are easier to compress efficiently
+
+- Preferably, the transform will compact the energy or information in a block into a small number of significant coefficients
+
+- After applying a block transform, the transformed block represents the same information, but most of the data in the block are typically concentrated into a small group of large valued coefficients
+
+- The transformed block can be quantized to retain these significant coefficients thus retaining most of the important visual information whilst removing small-valued coefficients that do not contribute much to the image
+
+- A block transform takes advantage of certain features of photographic and video images and certain characteristics of human vision including the follwing:
+  1. A typical image or video frame is made up of strong features such as objects, edges and textures, wiht smaller, more subtle variations of texture
+  2. Dominant features in images, such as lines and textures, are often important to the overall visual effect
+  3. Our vision system responds to these features and we tend to notice them more than we do small , subtle variations in tecture
+  4. Dominant features in an image tend to appear as strong spatial frequencies
+  5. We can remove weak or small-values spatial frequencies without a siginificant loss of image quality
+
+- A block within an image can be represented as a sum of basis patterns, each of which corresponds to a spatial frequency component in the block.
+
+- Each type of block transform has its own set of basis patterns
+
+- The basis patterns can be thought of as prototypes or building blocks for actual image blocks. Any 4 x 4 image block can be created by combining these 16 basis patterns with different weights by scaling each basis patterns and combining them together
+
+- The set of weights or scales of each basis pattern are the transform coefficient. This means that the forward transform calculates the set of weighting values or coefficients that, when applied to the same set of basis pattern, construct the original image block
+
+- The same process can be applied with different block sizes
+
+- The forward transform takes as its input a block of image or residual samples and outputs the coefficient or weights of each of the basis patterns
+
+- The transform finds the weights for each basis patterns that woudl exactly reproduce the image block
+
+- The inverse transform takes a block of coefficients and calculates the corresponding image block. In other words, the inverse transform synthesizes an image block based on the coefficients or weights of each of the N x N basis patterns
+
+- A block transform should decorrelate and compact information in a block of residual image samples. This means that for a typical image blokc the transform should concentrate the spread-out image information into as few significant or large valued coefficients as possible, which are preferably closely grouped together in the transformed block. Usually this is the top-left of the transform block
+
+- There are multiple types of transforms including:
+  1. The Karhunen-Loeve Transform: The optimal transform for a block of samples depends on the actual information in the block. For a given set of input data, we can derive a theoretically optimal transform, according to desirable properties of decorrelation and compaction. The KLT transform can be optimal in certain scenarios. The KLT is a block transform with coefficients derived from a set of input data such as an image or video frame. There are two problems that make the KLT impactical for many image and video applications. First, the KLT is not amenable to fast, computationaly efficient implementation. Real-time implementation would require signinficantly higher computational resources that other alternative transforms. Second, the coefficients of the KLT havbe to be calculated based on an input data set. For a practical video coding application, these coefficients woul dhave to somehow be comminicated from the encoder to the decoder so that the decoder could reverse the transform. If this is not done frequently enough, the KLT coding efficiency will suffer as the transform becomes increasingly sub-optimal for each image block. If this is done frequently, the overhead of communicating the inverse transform to the decoder will reduce the overall compression efficiency. The KLT has not seen widespread practical use
+  2. The Discrete Cosine Transform: A popular and widely used block transform is the DCT. Developed in 1973 by Rao and Yip, the DCT has properties that make it attractive for image compression. It approaches the decorrelation and compaction performance of the KLT for typical image blocks though not necessarily for residual blocks. For a particular block size, we need only a single transform design, as the transform does not need to adapt or change depending on the data to be transformed. The DCT of a two-dimensional block of pixels or smaples is seperable, which means it can be carried out using a one-dimensional transform applied twice - once to the rows and once to the columns of the block. The DCT can be implemented in many different ways, including in efficient software and hardware applications
+  3. The Hadamard Transform: This has basis patterns constructed from binary values rather than fractional or multi-valued integer functions as with the DCT or Discrete Sine Transform (DST). In these basis patterns, each sample position can have one of only two values, unlike the multi-valued patterns of the DCT. A block transform relies on correlating basis patterns with the features of an image or residual block. If the block contains a range of values, then a multi-valued basis pattern is perhaps more likely to correlate with the content of the block. Hence, a DHT may be suboptimal for typical real-world image blocks containing pixels with a wide range of values. However, a transform such as the DHT with two-valued basis pattenrs may be effectiver in certain cases such as:
+      - Small block sizes: WHen the block size is just 2 x 2 samples, a 2 x 2 DCT is identical to a 2 x 2 DGt
+      - Certain residual blocks: If the prediction stage has been very effective, the residual block will contain mostly small positive and negative values and zeros. A simple transform such as DHt may be just as effective as a more complex transform at correlating with such small-magnitude, dispersed values
+      - Graphic images or flat/simple features: Image blocks withing graphic areas, such as an overlay in a TV image, do not necessarily have the typical range of values of a conventional photographic image. These blocks may correlate well with the simple, two-valued basis patterns of the DHT
+  4. Discrete Sine Transform: Unlike the DCT, which is constructed from cosine functions, the DST is based on sinusoidal basis functions. Whilst the DCT can be close to optimal for original image blocks, certain residual blocks may correlate more closely with DST basis patterns
+
+- The DCT can be computed as a matrix multiplication that converts N x N block of samples X into a block of coefficients Y, where X and Y have the same dimensions
+
+- Considering the forward DCT process graphically, the process has the effect of detecting each of the 16 patterns. If the block has a similiar pattern to one of the 16 basis patterns, then the DCT coefficient for that pattern will have a large positive value and vice-versa
+
+- Said differently, the DCT calculates the sign and maginitude of spatial frequencies in the input block
 
 #### Quantization
 
