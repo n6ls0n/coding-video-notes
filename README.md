@@ -1406,6 +1406,16 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Probability Models and Context Adaptation
 
+- An entropy encoder can estimate or model the probability that symbol S has a particular value V. For examples if S is binary, a proability model estimates the probability that S is 0 or 1 i.e. P(S=0), P(S=1)
+
+- The actual value of S is 0 or 1. If the actual value is 0, then the probability P(S=0) increases slightly, since we have coded one more value of S=0. If the actual value is 1, the P(S=0) decreases slightly
+
+- We can update the proability model after encoding S, increasing or decreasing P(S=0) depending on whether a 0 or a 1 was encoded. In this way, the proability model adjusts P(S=0) based on the actual encoding statistics. It is an adapative model
+
+- Which model should we choose for encoding S? We could imsply maintain one model for each syntax element. Alternatively, we could mainatain multiple models for ceratin syntax elements and select a model based on the particular syntax element and/or what values have been coded in the local area of the video frame (the context)
+
+- How many proability models should we maintain? There is a trade-off between several factors. If we have more probability models, we can, in theory, track the proability of a particular symbol more accurately. On the other hand, more proability models mean that each individual model adapts more slowly since the actual encoding of a symbol usinf that model occurs less often. Each proability model requires storing and updating variables, so more models may increase storage and computational complexity
+
 #### Variable Length Coding
 
 #### Arithmetic Coding
