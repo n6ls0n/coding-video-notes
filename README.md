@@ -1338,7 +1338,39 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### HEVC Transform and Quantization
 
+#### Transform and Quantize in H266 Versatile Video Coding
+
 ### Entropy Coding
+
+- A video encoder produces many different symbols or syntax elements, containing information such as transform coefficients, prediction choices, block sizes and many other parameters
+
+- Some of the syntax elements occur many thousand of times in even a short clip, while others occur occasionally or just once per video
+
+- Certain syntax elements such as transform coefficients cna have a range of values while others are binary
+
+- The actual value of a syntax element may be statistically related to other syntax element values and other information
+
+- We can take all of these factors into account when we are trying to find an efficient encoding for all the syntax elements in a coded video clip
+
+- An entropy encoder converts a sequence of symbols or syntax elements into a bitstream and an entropy decoder converts the bitstream back into a sequence of symbols
+
+- The entropy encoder and decoder can make use of certain information during encoding and decoding such as:
+  - The expectation or proability that the current symbols S has value V, P(S = V)
+
+  - Local statistics or context e.g. what values have already been coded in the current region of the video frame or video sequence
+
+  - The current entropy encoder state
+
+- A video encoder can increase the efficiency of entropy coding by:
+  - Preprocessing values before entropy coding
+    - Scanning or processing quantized coefficients in a certain order to capitalize on the expected statistical relationship in a block
+    - Predicting a parameter value such a motion vector or QP from one or more previously coded values and entropy coding the difference between the actual and predicted values
+    - Inheriting a parameter valeu such as a mation compensation mode and vector from previously coded block or region
+    - Creating a list of likely values and selecting from the list
+    - A combination of some of the above points
+  - Estimating the probability of a syntax element having a particular value  e.g. 0 or 1 based on how often it took that value to repeat in the past
+  - Estimating the probability of a syntax element having a particular value based on the recent and/or surrounding statistics or context
+  - Choosing an entropy coding scheme that matches the number of bits per symbol with the probability of that symbol value occurring
 
 #### Entropy Coding for Video Compression
 
