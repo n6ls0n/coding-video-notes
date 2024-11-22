@@ -1418,6 +1418,27 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Variable Length Coding
 
+- A variable length coding scheme maps each symbol value to a binary codeword with variable number of bits
+
+- Preferably, symbol values that are more likely to occur are mapped to shorter codewords, and symbol values that are less common are mapped to longer codewords
+
+- The mapping of a particular symbol value to a particular VLC should be unique and the codeword should be uniquely decodable.
+
+- There are different types of practical VLC schemes including:
+  1. Unary Coding: A unary variable length code consists of a string of 1s terminated with a 0, or a string of 0s terminated with a 1. Smaller symbol values are mapped to shorter VLCs, so this coding method may be suitabel for a symbol where smalled vallues are more proabable than larger values. Each codeword can be uniquely coded. Encoding and decoding can be carried out with a simple algorithm. A potential disadvantage of unary VLCs is that the codeword length increases in direct proportion to the value, leading to larger codewords for higher values
+
+  2. Exponential Golomb Coding: Exp-Golomb coding is another coding scheme that is constructed according to a regular pattern. LIke unary coding, smaller symbol values are mapped to shorter VLCs and each codeword is uniquely decodable. Encoding and decoding are slightly more complex than for unary codewords but they can still be carried out algorithmically. An Exp-Golomb VLC can be decoded by reading consecutive 1s until a 0 is detected. The number of ones gives us M. The decoder then reads M further bits and constructs the symbol value. Compared to unary codewords, Exp-Golomb codewords increase in size more gradually, increasing approximately with log2 of the symbol value
+
+  3. Huffman Coding: This is a method of constructing a variable length code table for a symbol based on the probability of occurence of each possible value. Assuming we have seven possible values V of a motion vector component. If we know the probabilities of occurence of each value, we can apply the Huffman algorithm to construct a set of binary VLCs. The most probable value is assigned the shortest codeword, the next most probable value is assinged a longer codeword and so on. A few important points about the resulting VLC include:
+      - Each codeword is uniquely decodable. It is not a prefix of any other codeword
+      - The size of each codeword increases approximatley with the information content
+      - Huffman codewords do not usually exactly match the information content of each value, since Huffman VLCs, in common with other VLCs, are always an integer number of bits
+      - Constructing the VLC tabel requires knowledge of the probability of occurence of each value. If the probabilities change, the resulting VLC table changes
+
+  4. Precalculated VLC tables: In practice, the probability of a symbol having a particular value depends very much on the content being coded. In a video frame containing a lot of movement, we might expect the probability of zero vectors i.e. MV = 0, to be lower than in a video frame without much movement. One solution to this problem is to train the entropy coder with expected probabilities, based on a large set of representative video clips and then to specify the codewords in a standard by defining pre-calculated VLCs. This approach was taken in early video coding standards such as MPEG1 video, MPEG2 video and H263. Each VLC table is constructed based on a pre-determined estimate of probabilities
+
+  5. Context Adaptive VLC: Fixed tables of VLCs are not optimal for every video sequence, since the actual probability of each value will vary depending on scene content. ONe solution to this problem is context-adaptive variable length coding (CAVLC) in which the mapping of symbols to VLCs depends at least partly on recent coding statistics
+
 #### Arithmetic Coding
 
 #### Binary Arithmetic Coding
