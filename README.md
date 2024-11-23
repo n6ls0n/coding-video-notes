@@ -1485,6 +1485,22 @@ Arithmetic coding is an alternative to Huffman coding that can more closely appr
 
 #### Filtering and Video Coding
 
+- Filtering can be implemented in at least three places in a video codec: as a pre-filter before encoding the video, as an in-loop filter within the encoding and decoding process and/or as a post-filter adter decoding and before display or further processing
+
+- A pre-filter can be used to reduce camera noise or other unwanted variations in the video signal before encoding
+
+- Capturing video in low-light situations can lead to camera noise or graininess in the video image. Such noise may have high-frequency characteristics which in turn would introduce unwanted high-frequency transform coefficients that can increase the bitrate after compression
+
+- Camera shake during video capture can introduce unpredictable motion between frames which may reduce the effectiveness of motion-compensated prediciton and increase the bitrate after compression. A pre-filter that reduces spatial noise such as graininess and/or temporal variation such as camera shake, may result in more efficient video compression. A pre-filter in implemented prior to encoding does not need to be defined in a standard
+
+- A post-filter is any filtering that occurs after decoding and before subsequent processing or display. This could include, for example, filtering to further reduce compression artifacts such as blocking, ringing or maginitude
+
+- An in-loop filter attempts to improve the compression performance of the codec by reducing artifacts in decoded or reconstructed reference frames. Because identical filtering must be carried out in the encoder and decoder,in-loop filters may be defined in video-coding standards. An in-loop filter is designed with the specific aim of improving compression performance
+
+- Essentially, the the job of an in-loop filter is to improve the prediction process by reducing distortion in a reconstructed reference frame
+
+- Some types of distortion are predictable and are a function of the way the video-coding process works. If the codec can identify a distortion or artifact that was introduced by encoding, then it can attempt to filter it to reduce distortion 
+
 #### Detecting and Correcting Video Artifacts
 
 #### HEVC In-Loop Filtering
