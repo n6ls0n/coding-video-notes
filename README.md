@@ -1449,6 +1449,12 @@ Arithmetic coding is an alternative to Huffman coding that can more closely appr
 
 #### Binary Arithmetic Coding
 
+- A BAC encoder represents a series of bins i.e. binary values to be encoded, as a binary function that lies somewhere within a range. Each successive bin value makes the Range progressively narrower. The decoder can decode the bin values by identifying the Range pointed to by the binary fractional
+
+- Each bin is associated with a probability model or context model that estimates the probability that the next bin value is a 0 or a 1, P(0) and P(1)
+
+- Coding a bin involves sub-dividing a Range, in proportion to the probability estimates P(0) and P(1)
+
 #### Context Adaptive Binary Arithmetic Coding
 
 #### Entropy Coding in HEVC
