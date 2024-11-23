@@ -1499,9 +1499,31 @@ Arithmetic coding is an alternative to Huffman coding that can more closely appr
 
 - Essentially, the the job of an in-loop filter is to improve the prediction process by reducing distortion in a reconstructed reference frame
 
-- Some types of distortion are predictable and are a function of the way the video-coding process works. If the codec can identify a distortion or artifact that was introduced by encoding, then it can attempt to filter it to reduce distortion 
+- Some types of distortion are predictable and are a function of the way the video-coding process works. If the codec can identify a distortion or artifact that was introduced by encoding, then it can attempt to filter it to reduce distortion
 
 #### Detecting and Correcting Video Artifacts
+
+- Blocking artifacts are discontinuities across the boundaries between transform and/or prediction blocks in a coded video image
+
+- Blokcing artifacts have a characteristic tiling appearance. The visible edges of a blocking artifact align with the positions of transform blocks and/or prediction blocks when they first appear
+
+- To compensate for such a blocking artifact, we want to adjust the pixel values nearest the boundary to make the progression more continuous
+
+- The aim of a deblocking filter is to identify and reduce block boundary discontinuities that were introduced by the compression process, preferably without affecting features that are in the original image and that happnen to occur next to a block boundary
+
+- Unless the encoder sends extra information to the decoder, the decoder must identify and correct blocking artifacts based on known information about the decoded video image. There are ceratin aspects of blocking artifacts that are helpful here. First blocking artifacts occur next to or neat block boundaries such as transform block or prediction block edges. Thus the effect of a blocking artifact may be strongest in the samples immediately adjacent to the boundary and weaker in samples further away from the boundary. Second, the magnitude of a blocking artifact discontinuity is affected by certain conding parameters such as the quantizer parameter. Hence, a blocking effect may be identified if there is a discontinuity across a block boundary and if the magnitude of the discontinuity is below a certain threshold, which means that it is likely to have been caused by quantization effects and not by an image feature
+
+- Ringing or ripple artifacts are often found adjacent to strong edges in the orginal video image and appear as dark or light ripples that did not exist in the original image. This phenomenom is similar to the Gibbs phenomenom in found in digital filtering
+
+- Higher frequency block transform coefficients tend to have smaller magnitudes and are often quantized to zero. A square wave comprises a sum of increasingly higher frequencies with increasingly smaller magintudes. In a similar way, a strong edge in an image can be represented as a sum of increasingly smaller magnitudes and higher frequency transform coefficients. Removing the higher frequency coefficients by quantizing them to zero means the reconstructed block may exhibit ringing or ripple artifacts
+
+- Ringing artifacts have certain characteristic properties. Each of the distorted segments is a local peak or trough shape. By detecting these distinctive shapes in the reconstructed block, an encoder and a decoder can identify and correct the distortions
+
+- A magnitude offset can be defined as a change in the overall or average magnitude of the samples in a video image block. For example, a block or region of samples may appear lighter or darker than the original samples due to a shift in the magnitude of luma samples. Alternatively, a region may appeart to have shifted colour due to a change in the magnitude of the chroma samples
+
+- Quantization in a video codec can change the magnitude of transform coefficients or set them to zero. When the quantized transform coefficients are inverse transformed, the decoded block may experience a shift in magnitude that manifests as a change in the brightness or in the colotr of the reconstructed image
+
+- Magnitude shifts can also occur due to motion compensation. When the QP is high, the encoder may be forece to choose distorted regions to predict from which can lead to cumulative distortions. The reuslt can be a shift in apparent brightness or a shift in color representation
 
 #### HEVC In-Loop Filtering
 
