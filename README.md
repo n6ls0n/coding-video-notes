@@ -1441,6 +1441,12 @@ In a CTU in an I-picture, luma and chroma may optionally be partitioned separate
 
 #### Arithmetic Coding
 
+- The variable length coding scheme described above share a disadvantage, namely that VLCs with integral lengths are likely to be sub-optimal since information content can be a fractional number of bits
+
+- The compression efficiency of variable length codes can be particularly poor for symbols with probabilities greater than 0.5, as the best that can be achieved is to represent these symbols with probabilities greater than 0.5 as the best that can be achieved is to represent these symbols with a single-bit code
+
+Arithmetic coding is an alternative to Huffman coding that can more closely approach theoretical maximum compression ratios. An arithmetic encoder converts a sequence of data symbols into a single fractional number and can approach the optimal fractional number of bits required to represent each symbol
+
 #### Binary Arithmetic Coding
 
 #### Context Adaptive Binary Arithmetic Coding
