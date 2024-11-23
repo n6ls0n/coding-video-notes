@@ -1463,6 +1463,26 @@ Arithmetic coding is an alternative to Huffman coding that can more closely appr
 
 ### Coded Video Filtering
 
+- Video filtering involves applying a digital filter to pixels in a video image to modify or enhance the image in some way. Filtering can be applied for a number of purposes
+
+- Loop filtering is a type of filtering that occurs withing a video encoder and video decoder
+
+- The main purpose of loop filter is to improve the performance of the video codec itself by imporoving the prediction source and therefore improving the performance of prediction
+
+- Reference frames in an encoder can be filtered before creating a prediction for a block to be encoded. The decoder has to create an identical prediction so the same filter is applied to reference frames in the decoder
+
+- Two examples of in-loop filters used in video coding are deblocking and deringing filters. A deblocking filter attempts to reduce distortion at block boundaries. This is the characteristic blockiness introduced by the lossy encoding process that is familiar from over-compressed videos and images. A deringing filter attempts to reduce visible ripples near strong edges in a video image
+
+- In-loop filters affect the visual appearance of the filtered image
+
+- Visual quality is inherently subjective, which means that the extent to which such filters improve the displayed image is a matter of individual opinion. However, if an in-loop filter does an effective job of improving prediction and compression performance, then it also enables coding of higher quality video at a given bitrate
+
+- Lossy compression can provide significant amounts of compression but introduces distortion, sometimes described as quantization noise, into the decoded video image. This distortion often appears in characteristic forms known as encoding artifacts. For example, block-shaped distortions or blocking artifacts have been a characterstic feature of lossy image and video coding since early standards such as H261 and JPEG
+
+- An in-loop filter uses knowledge about the video encoding process to first discriminate coding artifacts from genuine image features and then to correct or reduce these artifacts whilst attempting to retain genuine image features
+
+- For example, blocking artifacts occur next to coding block boundaries and the magnitude of the artifact or the amount by which sample values are distorted is related to the quantizer parameter. A decoder can detect a blocking artifact based on its knowledge of the block boundaries and the current QP. In-loop filters can be considered to be a way of reducing noise such as coding artifacts in the decoded video signal by exploiting knowledge of the characteristics of the noise such as the way in which the video was coded
+
 #### Filtering and Video Coding
 
 #### Detecting and Correcting Video Artifacts
