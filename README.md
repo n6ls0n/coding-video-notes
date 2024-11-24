@@ -1598,4 +1598,19 @@ Arithmetic coding is an alternative to Huffman coding that can more closely appr
 
 #### Video Rate Control
 
+- Coded video typically consists of frames that have been encoded using a mix of prediction types. Inter prediction tends to be more efficient than intra prediction and biprediction tends to be more efficient that single reference prediction
+
+- Coded video frames will often vary in size due to the content of the scene as well as due to the choice of prediction types. A strucuturally simple scene may be easier to predict than a complex scene. When the prediction is easier and more effective the compressed frame tends to be smaller. In an inter-coded frame, scenes that have limited or predictable motion from one frame to the next are easier to predict than scenes with random motion. All of these factors mean that the bitrate of a coded video clip can vary considerably from frame to frame over time
+
+- Variation in the bitrate can pose problems for storage and transmission. If storage capacity is limited, it may be desirable to control the video bitrate so that the coded file is less than a certain target size. When transmitting coded video, it is important to contol
+
+- Video bitrate control attempts to control the encoding process to meet constraints such as target file size or a target tranmission bitrate. A simple but effective way of controlling bitrate is to adjust the QP. Increasing the quantization step size by increasing the QP leads to higher compression but lower image quality whereas reducing the QP has the opposite effect.
+
+- The output of a video encoder can be sent to a buffer which has the effect of smoothing out some of the short-term size variations between coded video frames. The coded video bitrate can be controlled by measuring the contents of the buffer, increasing QP when the buffer fills up and reducing QP when the buffer empties. The result will be a more consistent output bitrate at the expense of a variation in QP and therefore in video frame quality
+
+- Coded video streams may be described as constant bit rate (CBR) or variable bit rate (VBR). In practice, the frame‐to‐frame bitrate will vary as illustrated in the examples mentioned above. This short‐term variation is typically smoothed out by the encoder output buffer and decoder input buffer. The question is then whether the bitrate sent over the channel is CBR or VBR
+
+- Finally, video coding standards such as H.264, H.265 and H.266 specify limits that affect the coded bitstream. These limits are defined in terms of the operation of a hypothetical decoder, known as the hypothetical reference decoder (HRD). For example, Annex C of H.265/HEVC specifies an HRD model that can be used to check conformance to the standard. A coded picture buffer (CPB), which is the decoder input buffer, receives the coded bitstream. An H.265 decoder processes and decodes the stream to produce a set of decoded pictures, stored in a decoded picture buffer (DPB). The HRD can be used to check whether a coded bitstream conforms to the standard. As an example of this process, for a particular video Level limit, the CPB has a defined maximum size and the decoder processes coded video at a particular rate, which is a number of coding tree units (CTUs) per second. While decoding the bitstream, the CPB should not run out of data or underflow, nor exceed its capacity, that is, overflow. The HRD places yet another constraint on an encoder rate control algorithm, since any bitstream produced by a conforming encoder should not break the restrictions of the HRD.
+
 #### Error Handling
+
