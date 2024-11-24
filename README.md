@@ -1549,7 +1549,33 @@ Arithmetic coding is an alternative to Huffman coding that can more closely appr
 
 #### Coded Video File Formats
 
--
+- Recall that when transmitting encoded video, information common to some or all of the frames is stored in parameter sets that may be sent or stored at the start of the sequence in Picture, Sequence and Video Parameter Sets
+
+- Eahc video frame is coded as an access unit (AU), which is a term for a single coded frame. An AU is coded and sent as one or more network abstraction layer units (NALU), each of which is a dat astructure defined in the standard that contains a coded slice, which is all or part of a coded frame
+
+- A decoder can process the coded sequence by receiving the information from start to finish, decoding the set of slices that make up each AU and outputting decoded frames for playback
+
+- A compressed video sequence, suhc as a complete H265 sequence can be stored in a single fiel. For example, the HEVC model (HM) reference encoder, a software implementation of H265 produces a sile containing as encoded sequence and the HM reference decoder processes and decodes this file. The file produced by the HM encoder contains the coded AUs stored sequentially
+
+- Video is typically accompanied by audio, perhaps multiple channels of audio, and other information such as metadata and subtitle tracks. One way of storing all this information in a file is to simple concatenaten the data. Such as a file contains all the information necessary to decode and play a video and audio presentation. However, a simple file structure like this may not be practical for all purposes
+
+- With this structure, a decoder needs to have most or all of the file available beofre it can start playback since the audio is placed after the video at the end of the file. This means that the decoder has to recieve most of the file data before decoding and presenting the video and acccompanying audio. This is not ideal for progressive download or streaming, where it is usually preferrable to start decoding and playback as soon as possible after the file starts to download
+
+- Scenarios such as progressive download, broadcast and streaming may benefit from a more sophisticated file format with interleaving of audio and video data and metadata to make it easier for a client to decode, playback and navigate within the file
+
+- There are different types of file formats including Moving Picture Experts Group 4 (MPEG-4), MPEG-2 transport stream (TS) format and Matroska video format (MKV)
+
+- The ISO base media file format (BMFF) is a standardised format for storing audiovisual data in media files. The popular MP4 file format specified in MPEG4 Part 14 is based on the BMFF. Another document in the same file format standards family specifies how coded H264, H265 or H266 video is mapped to the ISO BMFF/MP$ file structure. Each coded AU becomes one sample in an MP4 file
+
+- The ISO BMFF evolved from the Quicktime format. The MP4 file format is an extension of the ISO BMFF and can optionally use the specification of the advanced video coding/high -efficiency video coding (AVC/HEVC) file format
+
+- A complete movie or video programme can be stored in one or more ISO BMFF or MP4 files. Each of these files contains an audiovisual clip or sequence that is organized as a set of tracks. A file might contain a single video trach with only video only and no audio or a single audio track with audio only and no video. The file could have a simple audiovisual file with one video track and one audio track or it could have multiple video and/or audio tracks e.g. amove with multiple audio channels for surround sounf and different languages
+
+- The ISO BMFF or MP$ file contains a movie or moov metadata part, which describes the tracks and their relationships and a media data or mdat part which consists of a series of coded samples such as coded audio samples or coded video NALU
+
+- Each track contains a sequence of samples. These are units of coded media such as coded video or audio with associated timing information. A player device can use the track information to identify, decode and present samples in the correct time order. To put it another way, the track information tells a player how to play back the video and audio correctly and points to actual coded video and audio
+
+- The ISO BMFF, MP4, AVC and HEVC file format specifications leave some flexibility as to how the metadata and coded samples should be arranged in a file. As we will see, files intended for progressive download or streaming may benefit from being organised in certain ways
 
 #### Transport of Coded Video
 
