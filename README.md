@@ -1533,7 +1533,23 @@ Arithmetic coding is an alternative to Huffman coding that can more closely appr
 
 #### Storing and Delivering Coded Video
 
+- Consider a scenario where a video source such as a camera feed is encoded, transmitted across a network, decoded and displayed. Video is captured by the camera at a certain resolution and frame rate. Each video frame is encoded and placed in the encoder output buffer
+
+- Recall that coded video frames often vary in size. For example, an intra-coded frame is usually mich larger than an inter-coded frame due to the greater efficiency of inter-frame prediction. This means that the encoder output bitrate is likely to vary from frame to frame
+
+- Coded frames are transmitterd from the encoder output buffer across a network or a channel. The rate of transmission depends on the network connection or channel capacity and might vary during the communication session
+
+- The encoder output buffer decouples the variable encoded bitrate from the transmission bitrate somewhat but it is common to use bitrate control feedback from the encoder buffer to the encoder to prevent the encoder output buffer from overflowing or underflowing
+
+- At the reciever, video data are recieved from the network at a certain bitrate. Depending on the network, this may be the same as the transmitted bitrate or it might vary depending on the network conditions
+
+- The recieved data are buffered in the decoder input buffer. The decoder retrieves data from this buffer typically at a rate that mirrors the output bitrate from the encoder. Coded frames are decoded and presented for display, preferably at a constant frame rate so that the video appears to the viewer to play smoothly. The decoded frame rate may be the same as or less than the source frame rate
+
+- The encoder might choose to drop frames because it does not have enough computational capacity or as part of a rate control strategy so that the decoded frame rate will be lower than the source frame rate. Frames may also be dropped at the decoder perhaps due to lost or delayed packets or because the decoder is running out of computational capacity
+
 #### Coded Video File Formats
+
+-
 
 #### Transport of Coded Video
 
